@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>Questionnaire</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Verdana, sans-serif;
+      margin: 0;
+    }
+
+    .component {
+      position: relative;
+      width: 100%;
+      /* ปรับขนาดตามขนาดจอ */
+      height: 100vh;
+      /* ปรับขนาดตามขนาดจอ */
+      background-image: url("https://plus.unsplash.com/premium_photo-1675686363460-25aa1039e94b?q=80&w=2043&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+      /* เปลี่ยนเป็น URL ของภาพที่คุณต้องการใช้ */
+      background-size: cover;
+      /* ปรับขนาดของภาพให้เต็มพื้นที่ */
+      background-position: center;
+      /* ตำแหน่งภาพให้อยู่ตรงกลาง */
+      /* filter: blur(1px); */
+      /* ทำให้ภาพเบลอ */
+      /* background-color: rgba(255, 255, 255, 0.5); */
+      /* สีพื้นหลังที่มองเห็นผ่านพื้นหลังเบลอ */
+      /* z-index:auto; */
+      /* ให้พื้นหลังเบลออยู่หน้าสุด */
+    }
+
+    .mySlides {
+      display: none;
+      /* filter: none; */
+    }
+
+    img {
+      vertical-align: middle;
+      margin-top: 5%;
+      margin-left: 25%;
+      /* filter: none; */
+    }
+    .buttonerror {
+      position: absolute;
+      bottom: 10px;
+      /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+      right: 20px;
+      /* ปรับค่าตำแหน่งของปุ่มจากด้านขวา */
+      background-color: #f1f1f1;
+      color: black;
+      border: none;
+      border-radius: 50%;
+      /* ทำให้มุมของปุ่มเป็นรูปวงกลม */
+      cursor: pointer;
+      
+    }
+    #err10{
+      position: absolute;
+      bottom: 80px;
+      /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+      right: 20px;
+      /* ปรับค่าตำแหน่งของปุ่มจากด้านขวา */
+    }
+    .buttonerror:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .buttonerror img.microphone {
+      width: 30px;
+      /* ปรับขนาดของรูปตามที่ต้องการ */
+      height: 30px;
+      /* ให้รูปปรับสัดส่วนตามขนาดที่กำหนด */
+      border: none;
+      /* ลบแบรนด์ (border) ทั้งหมด */
+      border-radius: 50%;
+      /* ทำให้มุมของปุ่มเป็นรูปวงกลม */
+      margin: 0;
+    }
+    img.finish {
+      position: absolute;
+      bottom: 10px;
+      /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+      right: 10px;
+      /* ปรับค่าตำแหน่งของปุ่มจากด้านขวา */
+      width: 60px;
+      /* ปรับขนาดของรูปตามที่ต้องการ */
+      height: 60px;
+      /* ให้รูปปรับสัดส่วนตามขนาดที่กำหนด */
+      border: none;
+      /* ลบแบรนด์ (border) ทั้งหมด */
+      border-radius: 50%;
+      /* ทำให้มุมของปุ่มเป็นรูปวงกลม */
+      margin: 0;
+    }
+
+    /* Slideshow container */
+    .slideshow-container {
+      /* margin-top: 30px; */
+      width: 100%;
+      height: 90vh;
+      /* max-width: 1000px; */
+      position: relative;
+      /* margin: auto; */
+      /* filter: none; */
+    }
+
+    .grid-container {
+      display: grid;
+      place-items: center;
+      height: 87vh;
+      /* ตั้งค่าความสูงเท่ากับความสูงของหน้าจอ */
+      /* margin-top: 70px;
+            margin-bottom: 70px; */
+    }
+
+    .grid-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: -10%;
+      /*add*/
+      grid-gap: 50px;
+      place-items: center;
+    }
+
+    .answer {
+      padding: 50px;
+      font-size: 30px;
+      font-weight: 100;
+      color: rgba(93, 92, 92, 0.801);
+      width: 500px;
+      border: 3px solid rgba(93, 92, 92, 0.801);
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.782);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .answer:hover {
+      background-color: rgba(93, 92, 92, 0.801);
+      color: #fff;
+    }
+
+    .answer.selected {
+      background-color: rgb(172, 245, 249);
+      color: #fff;
+      border-color: rgba(144, 147, 147, 0.811);
+    }
+
+    /* Next & previous buttons */
+    .prev,
+    .next {
+      cursor: pointer;
+      position: absolute;
+      /* height: 100%; */
+      top: 50%;
+      /* height: 100%; */
+      width: 5%;
+      padding: 80px 5%;
+      margin-top: -22px;
+      color: white;
+      font-weight: bold;
+      font-size: 50px;
+      transition: 0.6s ease;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+      /* filter: none; */
+    }
+
+    /* Position the "next button" to the right */
+    .next {
+      /* top: 50%; */
+      right: 0;
+      border-radius: 3px 0 0 3px;
+      /* filter: none; */
+    }
+
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover,
+    .next:hover {
+      background-color: rgba(74, 71, 71, 0.8);
+      /* filter: none; */
+    }
+
+    /* Caption text */
+    .text {
+      color: black;
+      background-color: rgba(252, 250, 250, 0.345);
+      font-size: 55px;
+      padding: 19px 12px;
+
+      right: 50%;
+      height: 10%;
+
+      /* bottom: 85%; */
+      width: auto;
+      /* text-align: center; */
+      border-radius: 10px;
+      /* filter: none; */
+    }
+
+    /* Number text (1/3 etc) */
+    .numbertext {
+      color: #f2f2f2;
+      font-size: 35px;
+      padding: 8px 12px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      /* filter: none; */
+    }
+
+    /* The dots/bullets/indicators */
+    .dot {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      line-height: 25px;
+      border-radius: 50%;
+      border: 1px solid whitesmoke;
+      background-color: #6f6f6f;
+      text-align: center;
+      /* font-size: 12px; */
+      margin: 0 6px;
+      cursor: pointer;
+      transition: background-color 0.6s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .active,
+    .dot:hover {
+      background-color: #fced65;
+      /* filter: none; */
+    }
+
+    /* Fading animation */
+    .fade {
+      animation-name: fade;
+      animation-duration: 1.5s;
+    }
+
+    .slide-in {
+      animation-name: slide-in;
+      animation-duration: 2s;
+      animation-direction: alternate;
+      /* กำหนดทิศทางการเล่น animation เป็น alternate */
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0.4;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slide-in {
+      from {
+        transform: translateX(-100%);
+      }
+
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    .input-field {
+      border: 1px solid #ccc;
+      /* background-color: #fff; */
+      font-size: larger;
+      padding: 10px;
+      /* margin-top: 0%; */
+      /* margin-bottom: 20px; */
+      height: 15%;
+      width: 40%;
+    }
+
+    #keyboard-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      /* background-color: #f2f2f2; */
+      /* border-top: 1px solid #ccc; */
+      display: none;
+      z-index: 1;
+      /* ตั้งค่า z-index เพื่อให้ keyboard อยู่ด้านบนของ grid-row */
+    }
+
+    .keyboard-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .keyboard-key {
+      /* padding: 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            cursor: pointer;
+            user-select: none; */
+      width: 6%;
+      height: 6vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 5px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      overflow: hidden; /* ป้องกันข้อความเกินขอบเขต */
+    }
+
+    .keyboard-key:hover {
+      background-color: #eaeaea;
+    }
+
+    .uppercase {
+      display: none;
+      /* ซ่อนตัวพิมพ์ใหญ่ */
+    }
+
+    .lowercase {
+      display: none;
+    }
+
+    #keyboard-container.show-uppercase .uppercase {
+      display: flex;
+      /* แสดงตัวพิมพ์ใหญ่เมื่อมี class "show-uppercase" */
+    }
+
+    #keyboard-container.show-lowercase .lowercase {
+      display: flex;
+      /* แสดงตัวพิมพ์ใหญ่เมื่อมี class "show-uppercase" */
+    }
+
+    .typing {
+      display: grid;
+      /* ซ่อนตัวพิมพ์ใหญ่ */
+    }
+
+    /* On smaller screens, decrease text size */
+    @media only screen and (max-width: 480px) {
+
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        /* height: 100%; */
+        top: 50%;
+        /* height: 100%; */
+        width: 5%;
+        padding: 30px 5%;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 40px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+      }
+
+      .next {
+        /* top: 50%; */
+        right: 0;
+        border-radius: 3px 0 0 3px;
+        /* filter: none; */
+      }
+
+      .text {
+        position: absolute;
+        /* width: 80%; */
+        /* ปรับขนาดของ text */
+        top: 12%;
+        left: 8%;
+        width: 80%;
+        height: auto;
+        padding: 5px;
+        /* ย้าย text มาอยู่ตรงกลาง */
+        /* bottom: 10%; */
+        /* ย้าย text มาอยู่ตรงกลาง */
+        font-size: 22px;
+        align-items: center;
+        text-align: center;
+        /* ปรับให้ text มาอยู่ตรงกลาง */
+        /* filter: none; */
+      }
+
+      .grid-row {
+        margin-top: -12%;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 50px;
+        grid-row-gap: 5%;
+        align-items: center;
+        justify-content: center;
+        place-items: center;
+      }
+
+      .answer {
+        padding: 12px;
+        font-size: 18px;
+        width: 80%;
+        color: rgba(93, 92, 92, 0.801);
+        /* ปรับขนาดเพื่อให้ answer มีขนาดที่เหมาะสมกับหน้าจอ */
+        border: 2px solid rgba(93, 92, 92, 0.801);
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.782);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        line-height: 25px;
+        border-radius: 50%;
+        border: 1px solid whitesmoke;
+        background-color: #6f6f6f;
+        text-align: center;
+        /* font-size: 12px; */
+        margin: 0 1px;
+        cursor: pointer;
+        transition: background-color 0.6s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      .input-field {
+      border: 1px solid #ccc;
+      /* background-color: #fff; */
+      font-size: larger;
+      padding: 10px;
+      margin-top: 15%;
+      /* margin-bottom: 20px; */
+      height: 15%;
+      width: 40%;
+    }
+
+    }
+
+    @media (min-width: 481px) and (max-width: 767px) {
+
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        /* height: 100%; */
+        top: 50%;
+        /* height: 100%; */
+        width: 5%;
+        padding: 30px 5%;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 40px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+      }
+
+      .next {
+        /* top: 50%; */
+        right: 0;
+        border-radius: 3px 0 0 3px;
+        /* filter: none; */
+      }
+
+      .text {
+        position: absolute;
+        /* width: 80%; */
+        /* ปรับขนาดของ text */
+        top: 12%;
+        left: 8%;
+        width: 80%;
+        height: auto;
+        padding: 5px;
+        /* ย้าย text มาอยู่ตรงกลาง */
+        /* bottom: 10%; */
+        /* ย้าย text มาอยู่ตรงกลาง */
+        font-size: 26px;
+        align-items: center;
+        text-align: center;
+        /* ปรับให้ text มาอยู่ตรงกลาง */
+        /* filter: none; */
+      }
+
+      .grid-row {
+        margin-top: 12%;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 50px;
+        grid-row-gap: 5%;
+        align-items: center;
+        justify-content: center;
+        place-items: center;
+      }
+
+      .answer {
+        padding: 13px;
+        font-size: 20px;
+        width: 90%;
+        color: rgba(93, 92, 92, 0.801);
+        /* ปรับขนาดเพื่อให้ answer มีขนาดที่เหมาะสมกับหน้าจอ */
+        border: 2px solid rgba(93, 92, 92, 0.801);
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.782);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        line-height: 25px;
+        border-radius: 50%;
+        border: 1px solid whitesmoke;
+        background-color: #6f6f6f;
+        text-align: center;
+        /* font-size: 12px; */
+        margin: 0 2px;
+        cursor: pointer;
+        transition: background-color 0.6s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      .input-field {
+      border: 1px solid #ccc;
+      /* background-color: #fff; */
+      font-size: larger;
+      margin-top: 20%;
+      padding: 10px;
+      /* margin-bottom: 20px; */
+      height: 15%;
+      width: 40%;
+    }
+
+    }
+
+    /* Media Query for Tablets Ipads portrait mode */
+    @media (min-width: 768px) and (max-width: 1024px) {
+
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        /* height: 100%; */
+        top: 50%;
+        /* height: 100%; */
+        width: 5%;
+        padding: 30px 5%;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 40px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+      }
+
+      .next {
+        /* top: 50%; */
+        right: 0;
+        border-radius: 3px 0 0 3px;
+        /* filter: none; */
+      }
+
+      .text {
+        position: absolute;
+        /* width: 80%; */
+        /* ปรับขนาดของ text */
+        top: 18%;
+        left: 8%;
+        width: 80%;
+        height: auto;
+        padding: 5px;
+        /* ย้าย text มาอยู่ตรงกลาง */
+        /* bottom: 10%; */
+        /* ย้าย text มาอยู่ตรงกลาง */
+        font-size: 30px;
+        align-items: center;
+        text-align: center;
+        /* ปรับให้ text มาอยู่ตรงกลาง */
+        /* filter: none; */
+      }
+
+      .grid-row {
+        margin-top: -20%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 0;
+        grid-row-gap: 5%;
+        align-items: center;
+        justify-content: center;
+        place-items: center;
+      }
+
+      .answer {
+        padding: 23px;
+        font-size: 24px;
+        width: 80%;
+        color: rgba(93, 92, 92, 0.801);
+        /* ปรับขนาดเพื่อให้ answer มีขนาดที่เหมาะสมกับหน้าจอ */
+        border: 2px solid rgba(93, 92, 92, 0.801);
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.782);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        line-height: 25px;
+        border-radius: 50%;
+        border: 1px solid whitesmoke;
+        background-color: #6f6f6f;
+        text-align: center;
+        /* font-size: 12px; */
+        margin: 0 3px;
+        cursor: pointer;
+        transition: background-color 0.6s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      .grid-container {
+        display: grid;
+        place-items: center;
+        height: 87vh;
+        /* ตั้งค่าความสูงเท่ากับความสูงของหน้าจอ */
+        /* margin-top: 70px;
+            margin-bottom: 70px; */
+      }
+
+      .input-field {
+      border: 1px solid #ccc;
+      /* background-color: #fff; */
+      font-size: larger;
+      padding: 10px;
+      margin-top: 15%;
+      /* margin-bottom: 20px; */
+      height: 15%;
+      width: 40%;
+    }
+
+    }
+
+    /* Media Query for Laptops and Desktops */
+    @media (min-width: 1025px) and (max-width: 1280px) {
+
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        /* height: 100%; */
+        top: 50%;
+        /* height: 100%; */
+        width: 5%;
+        padding: 30px 5%;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 40px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+      }
+
+      .next {
+        /* top: 50%; */
+        right: 0;
+        border-radius: 3px 0 0 3px;
+        /* filter: none; */
+      }
+
+      .text {
+        position: absolute;
+        /* width: 80%; */
+        /* ปรับขนาดของ text */
+        top: 18%;
+        left: 8%;
+        width: 80%;
+        height: auto;
+        padding: 5px;
+        /* ย้าย text มาอยู่ตรงกลาง */
+        /* bottom: 10%; */
+        /* ย้าย text มาอยู่ตรงกลาง */
+        font-size: 34px;
+        align-items: center;
+        text-align: center;
+        /* ปรับให้ text มาอยู่ตรงกลาง */
+        /* filter: none; */
+      }
+
+      .grid-row {
+        margin-top: -12%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 50px;
+        grid-row-gap: 5%;
+        align-items: center;
+        justify-content: center;
+        place-items: center;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 25px;
+        border-radius: 50%;
+        border: 1px solid whitesmoke;
+        background-color: #6f6f6f;
+        text-align: center;
+        /* font-size: 12px; */
+        margin: 0 5px;
+        cursor: pointer;
+        transition: background-color 0.6s ease;
+        position: relative;
+        z-index: 1;
+      }
+
+      .answer {
+        padding: 25px;
+        font-size: 26px;
+        font-weight: 100;
+        color: rgba(93, 92, 92, 0.801);
+        width: 300px;
+        border: 3px solid rgba(93, 92, 92, 0.801);
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.782);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .input-field {
+      border: 1px solid #ccc;
+      /* background-color: #fff; */
+      font-size: larger;
+      padding: 10px;
+      margin-top: 15%;
+      /* margin-bottom: 20px; */
+      height: 15%;
+      width: 40%;
+    }
+    
+    }
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="component">
+    <div class="slideshow-container">
+      <script>
+        const requestOptions = {
+          method: "GET",
+          redirect: "follow",
+        };
+        fetch(
+          "http://localhost:8081/question.php",
+          requestOptions
+        )
+          .then((response) => response.text())
+          .then((result) => {
+            // นำข้อมูลที่ได้มาใส่ใน element ที่มี id เป็น 'Question1'
+            var jsonObj = JSON.parse(result);
+            console.log(jsonObj[0].question);
+            // วนลูปเพื่อกำหนดค่าใน document.getElementById
+            for (let i = 0; i < jsonObj.length; i++) {
+              const questionId = `Question${i + 1}`;
+
+              //console.log(questionId);
+              document.getElementById(`${questionId}`).innerHTML =
+                jsonObj[i].question;
+            }
+          })
+          .catch((error) => console.error(error));
+        const choice = {
+          method: "GET",
+          redirect: "follow",
+        };
+        fetch(
+          "http://localhost:8081/SELECTchoice.php",
+          requestOptions
+        )
+          .then((response) => response.text())
+          .then((result) => {
+            var jsonObj = JSON.parse(result);
+            console.log(jsonObj[0].answerTEXT);
+            // วนลูปเพื่อกำหนดค่าใน document.getElementById
+            for (let i = 0; i < jsonObj.length; i++) {
+              const choiceId = `${i + 1}`;
+
+              //console.log(choiceId);
+              document.getElementById(`${choiceId}`).innerHTML =
+                jsonObj[i].answerTEXT;
+            }
+          })
+          .catch((error) => console.error(error));
+      </script>
+
+      <div class="mySlides fade">
+        <div class="numbertext">1 / 10</div>
+        <div class="text" id="Question1"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField1" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row1">
+              <div class="answer" onclick="selectAnswer(this, 1)" id="1"></div>
+              <div class="answer" onclick="selectAnswer(this, 2)" id="2"></div>
+              <div class="answer" onclick="selectAnswer(this, 3)" id="3"></div>
+              <div class="answer" onclick="selectAnswer(this, 4)" id="4"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err1" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">2 / 10</div>
+        <div class="text" id="Question2"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField2" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row2">
+              <div class="answer" onclick="selectAnswer(this, 5)" id="5"></div>
+              <div class="answer" onclick="selectAnswer(this, 6)" id="6"></div>
+              <div class="answer" onclick="selectAnswer(this, 7)" id="7"></div>
+              <div class="answer" onclick="selectAnswer(this, 8)" id="8"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err2" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">3 / 10</div>
+        <div class="text" id="Question3"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField3" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row3">
+              <div class="answer" onclick="selectAnswer(this, 9)" id="9"></div>
+              <div class="answer" onclick="selectAnswer(this, 10)" id="10"></div>
+              <div class="answer" onclick="selectAnswer(this, 11)" id="11"></div>
+              <div class="answer" onclick="selectAnswer(this, 12)" id="12"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err3" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">4 / 10</div>
+        <div class="text" id="Question4"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField4" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row4">
+              <div class="answer" onclick="selectAnswer(this, 13)" id="13"></div>
+              <div class="answer" onclick="selectAnswer(this, 14)" id="14"></div>
+              <div class="answer" onclick="selectAnswer(this, 15)" id="15"></div>
+              <div class="answer" onclick="selectAnswer(this, 16)" id="16"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err4" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">5 / 10</div>
+        <div class="text" id="Question5"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField5" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row5">
+              <div class="answer" onclick="selectAnswer(this, 17)" id="17"></div>
+              <div class="answer" onclick="selectAnswer(this, 18)" id="18"></div>
+              <div class="answer" onclick="selectAnswer(this, 19)" id="19"></div>
+              <div class="answer" onclick="selectAnswer(this, 20)" id="20"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err5" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">6 / 10</div>
+        <div class="text" id="Question6"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField6" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row6">
+              <div class="answer" onclick="selectAnswer(this, 21)" id="21"></div>
+              <div class="answer" onclick="selectAnswer(this, 22)" id="22"></div>
+              <div class="answer" onclick="selectAnswer(this, 23)" id="23"></div>
+              <div class="answer" onclick="selectAnswer(this, 24)" id="24"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err6" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+      <div class="mySlides fade">
+        <div class="numbertext">7 / 10</div>
+        <div class="text" id="Question7"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField7" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row7">
+              <div class="answer" onclick="selectAnswer(this, 25)" id="25"></div>
+              <div class="answer" onclick="selectAnswer(this, 26)" id="26"></div>
+              <div class="answer" onclick="selectAnswer(this, 27)" id="27"></div>
+              <div class="answer" onclick="selectAnswer(this, 28)" id="28"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err7" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">8 / 10</div>
+        <div class="text" id="Question8"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField8" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row8">
+              <div class="answer" onclick="selectAnswer(this, 29)" id="29"></div>
+              <div class="answer" onclick="selectAnswer(this, 30)" id="30"></div>
+              <div class="answer" onclick="selectAnswer(this, 31)" id="31"></div>
+              <div class="answer" onclick="selectAnswer(this, 32)" id="32"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err8" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">9 / 10</div>
+        <div class="text" id="Question9"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField9" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row9">
+              <div class="answer" onclick="selectAnswer(this, 33)" id="33"></div>
+              <div class="answer" onclick="selectAnswer(this, 34)" id="34"></div>
+              <div class="answer" onclick="selectAnswer(this, 35)" id="35"></div>
+              <div class="answer" onclick="selectAnswer(this, 36)" id="36"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err9" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+      </div>
+      <div class="mySlides fade">
+        <div class="numbertext">10 / 10</div>
+        <div class="text" id="Question10"></div>
+        <form action="/answer" method="POST">
+          <div class="grid-container">
+            <input id="inputField10" class="input-field" contenteditable="true"
+              placeholder="สามารถกรอกคำตอบอื่นๆได้ครับ"></input>
+            <div class="grid-row typing" id="grid-row10">
+              <div class="answer" onclick="selectAnswer(this, 37)" id="37"></div>
+              <div class="answer" onclick="selectAnswer(this, 38)" id="38"></div>
+              <div class="answer" onclick="selectAnswer(this, 39)" id="39"></div>
+              <div class="answer" onclick="selectAnswer(this, 40)" id="40"></div>
+            </div>
+          </div>
+        </form>
+        <button id="err10" class="buttonerror" onclick="showbuttonerr()">
+          <img
+            class="microphone"
+            src="pic\microphoneconnect.png"
+            alt="microphone disconnect"
+          />
+        </button>
+        <img
+            class="finish"
+            src="pic\finish.png"
+            alt="microphone disconnect"
+            onclick="finish()"
+          />
+          <script>
+            function finish() {
+              // ดึงข้อมูลจาก query parameter
+              const queryParams = new URLSearchParams(window.location.search);
+              const userID = queryParams.get("userID");
+
+              // สร้าง URL พร้อมกับพารามิเตอร์
+              var url = "pressure.html?userID=" + userID;
+
+              // ลิ้งไปยังหน้าเว็บใหม่
+              window.location.href = url;
+            }
+          </script>
+      </div>
+
+      <div id="keyboard-container">
+        <div class="keyboard-row">
+          <div class="keyboard-key lowercase">ๅ</div>
+          <div class="keyboard-key lowercase">/</div>
+          <div class="keyboard-key lowercase">-</div>
+          <div class="keyboard-key lowercase">ภ</div>
+          <div class="keyboard-key lowercase">ถ</div>
+          <div class="keyboard-key lowercase">ุ</div>
+          <div class="keyboard-key lowercase">ึ</div>
+          <div class="keyboard-key lowercase">ค</div>
+          <div class="keyboard-key lowercase">ต</div>
+          <div class="keyboard-key lowercase">จ</div>
+          <div class="keyboard-key lowercase">ข</div>
+          <div class="keyboard-key lowercase">ช</div>
+        </div>
+        <div class="keyboard-row">
+          <div class="keyboard-key lowercase">ๆ</div>
+          <div class="keyboard-key lowercase">ไ</div>
+          <div class="keyboard-key lowercase">ำ</div>
+          <div class="keyboard-key lowercase">พ</div>
+          <div class="keyboard-key lowercase">ะ</div>
+          <div class="keyboard-key lowercase">ั</div>
+          <div class="keyboard-key lowercase">ี</div>
+          <div class="keyboard-key lowercase">ร</div>
+          <div class="keyboard-key lowercase">น</div>
+          <div class="keyboard-key lowercase">ย</div>
+          <div class="keyboard-key lowercase">บ</div>
+          <div class="keyboard-key lowercase">ล</div>
+          <div class="keyboard-key lowercase">ฃ</div>
+        </div>
+        <div class="keyboard-row">
+          <div class="keyboard-key lowercase">ฟ</div>
+          <div class="keyboard-key lowercase">ห</div>
+          <div class="keyboard-key lowercase">ก</div>
+          <div class="keyboard-key lowercase">ด</div>
+          <div class="keyboard-key lowercase">เ</div>
+          <div class="keyboard-key lowercase">้</div>
+          <div class="keyboard-key lowercase">่</div>
+          <div class="keyboard-key lowercase">า</div>
+          <div class="keyboard-key lowercase">ส</div>
+          <div class="keyboard-key lowercase">ว</div>
+          <div class="keyboard-key lowercase">ง</div>
+        </div>
+        <div class="keyboard-row">
+          <div class="keyboard-key lowercase">ผ</div>
+          <div class="keyboard-key lowercase">ป</div>
+          <div class="keyboard-key lowercase">อ</div>
+          <div class="keyboard-key lowercase">แ</div>
+          <div class="keyboard-key lowercase">ิ</div>
+          <div class="keyboard-key lowercase">ื</div>
+          <div class="keyboard-key lowercase">ท</div>
+          <div class="keyboard-key lowercase">ม</div>
+          <div class="keyboard-key lowercase">ใ</div>
+          <div class="keyboard-key lowercase">ฝ</div>
+        </div>
+        <div class="keyboard-row">
+          <div class="keyboard-key uppercase">+</div>
+          <div class="keyboard-key uppercase">๑</div>
+          <div class="keyboard-key uppercase">๒</div>
+          <div class="keyboard-key uppercase">๓</div>
+          <div class="keyboard-key uppercase">๔</div>
+          <div class="keyboard-key uppercase">ู</div>
+          <div class="keyboard-key uppercase">฿</div>
+          <div class="keyboard-key uppercase">๕</div>
+          <div class="keyboard-key uppercase">๖</div>
+          <div class="keyboard-key uppercase">๗</div>
+          <div class="keyboard-key uppercase">๘</div>
+          <div class="keyboard-key uppercase">๙</div>
+        </div>
+        <div class="keyboard-row">
+          <div class="keyboard-key uppercase">๐</div>
+          <div class="keyboard-key uppercase">"</div>
+          <div class="keyboard-key uppercase">ฎ</div>
+          <div class="keyboard-key uppercase">ฑ</div>
+          <div class="keyboard-key uppercase">ธ</div>
+          <div class="keyboard-key uppercase">ํ</div>
+          <div class="keyboard-key uppercase">๊</div>
+          <div class="keyboard-key uppercase">ณ</div>
+          <div class="keyboard-key uppercase">ฯ</div>
+          <div class="keyboard-key uppercase">ญ</div>
+          <div class="keyboard-key uppercase">ฐ</div>
+          <div class="keyboard-key uppercase">,</div>
+          <div class="keyboard-key uppercase">ฅ</div>
+        </div>
+        <!-- ซ้ำสำหรับแถวอื่น ๆ ของ keyboard -->
+        <div class="keyboard-row">
+          <div class="keyboard-key uppercase">ฤ</div>
+          <div class="keyboard-key uppercase">ฆ</div>
+          <div class="keyboard-key uppercase">ฏ</div>
+          <div class="keyboard-key uppercase">โ</div>
+          <div class="keyboard-key uppercase">ฌ</div>
+          <div class="keyboard-key uppercase">็</div>
+          <div class="keyboard-key uppercase">๋</div>
+          <div class="keyboard-key uppercase">ษ</div>
+          <div class="keyboard-key uppercase">ศ</div>
+          <div class="keyboard-key uppercase">ซ</div>
+          <div class="keyboard-key uppercase">.</div>
+        </div>
+        <!-- ซ้ำสำหรับแถวอื่น ๆ ของ keyboard -->
+        <div class="keyboard-row">
+          <!-- <div class="keyboard-key shift uppercase">Shift</div> -->
+          <div class="keyboard-key uppercase">(</div>
+          <div class="keyboard-key uppercase">)</div>
+          <div class="keyboard-key uppercase">ฉ</div>
+          <div class="keyboard-key uppercase">ฮ</div>
+          <div class="keyboard-key uppercase">ฺ</div>
+          <div class="keyboard-key uppercase">์</div>
+          <div class="keyboard-key uppercase">?</div>
+          <div class="keyboard-key uppercase">ฒ</div>
+          <div class="keyboard-key uppercase">ฬ</div>
+          <div class="keyboard-key uppercase">ฦ</div>
+          <!-- <div class="keyboard-key backspace uppercase">Backspace</div> -->
+        </div>
+        <!-- ซ้ำสำหรับแถวอื่น ๆ ของ keyboard -->
+        <div class="keyboard-row">
+          <div class="keyboard-key shift">↑</div>
+          <div class="keyboard-key enter" >Enter</div>
+          <div class="keyboard-key backspace">←</div>
+        </div>
+      </div>
+
+      <a class="prev" onclick="plusSlides(-1)">❮</a>
+      <a class="next" onclick="plusSlides(1)">❯</a>
+    </div>
+
+    <br />
+
+    <div style="text-align: center">
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+      <span class="dot" onclick="currentSlide(4)"></span>
+      <span class="dot" onclick="currentSlide(5)"></span>
+      <span class="dot" onclick="currentSlide(6)"></span>
+      <span class="dot" onclick="currentSlide(7)"></span>
+      <span class="dot" onclick="currentSlide(8)"></span>
+      <span class="dot" onclick="currentSlide(9)"></span>
+      <span class="dot" onclick="currentSlide(10)"></span>
+    </div>
+  </div>
+  <!-- </div> -->
+
+  <script>
+    const show = new URLSearchParams(window.location.search);
+    const page = parseInt(show.get("page")); // แปลงค่า page เป็นตัวเลขจาก string
+    let prevSlideIndex = [];
+    let slideIndex = page;
+    const queryParams = new URLSearchParams(window.location.search);
+    const userID = queryParams.get("userID");
+    const datapage = new URLSearchParams();
+    datapage.append("userID", userID);
+    console.log(datapage)
+    const checkpage = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: datapage,
+        redirect: "follow",
+      };
+    fetch(
+        "http://localhost:8081/SELECTanswer_report.php",
+        checkpage
+      )
+    .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+    .then((result) => {
+            if (result.length === 0) {
+                throw new Error("No data found");
+            }
+          //var jsonObj = JSON.parse(result);
+          console.log(result.users[0].questionID);
+          console.log(result.users.length);
+          // วนลูปเพื่อกำหนดค่าใน document.getElementById
+          for (let i = 0; i <result.users.length; i++) {
+            //console.log(questionId);
+            prevSlideIndex.push(parseInt(result.users[i].questionID));
+            
+          }
+          showSlides(slideIndex);
+        })
+    .catch((error) => console.error(error));
+    
+
+    console.log(prevSlideIndex); // พิมพ์ค่า prevSlideIndex ที่ได้
+    
+    
+    
+
+    function plusSlides(n) {
+      showSlides((slideIndex += n));
+    }
+
+    function currentSlide(n) {
+      showSlides((slideIndex = n));
+    }
+
+    function showSlides(n) {
+      let i;
+      let slides = document.getElementsByClassName("mySlides");
+      let dots = document.getElementsByClassName("dot");
+      
+      //prevSlideIndex.push(n);
+      console.log("prevSlideIndex", prevSlideIndex);
+      console.log("prevSlideIndex.length", prevSlideIndex.length);
+      let isIndexChanged = true; // สร้างตัวแปรเพื่อตรวจสอบว่ามีการเปลี่ยน slideIndex หรือไม่
+      
+      // ตรวจสอบว่า slideIndex มีการเปลี่ยนแปลงหรือไม่
+      for (let i = 0; i < prevSlideIndex.length; i++) {
+        if (parseInt(n) === prevSlideIndex[i]) {
+          console.log("n"+n)
+          console.log("prevSlideIndex[i]"+prevSlideIndex[i])
+          isIndexChanged = false;
+          break;
+        }
+      }
+
+      if (isIndexChanged) {
+        INSERTToServer(n, userID);
+        prevSlideIndex.push(n);
+      }
+
+      if (n > slides.length) {
+        slideIndex = 1;
+      }
+      if (n < 1) {
+        slideIndex = slides.length;
+      }
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slides[slideIndex - 1].style.display = "block";
+      dots[slideIndex - 1].className += " active";
+    }
+    function showbuttonerr() {
+      // ดึงข้อมูลจาก query parameter
+      const queryParams = new URLSearchParams(window.location.search);
+      const userID = queryParams.get("userID");
+      
+      var url = "total-mic.html?userID=" + userID + "&page="+slideIndex;
+      
+      
+
+      // ลิ้งไปยังหน้าเว็บใหม่
+      window.location.href = url;
+    }
+    function selectAnswer(element, answerNumber) {
+      const isSelected = element.classList.contains("selected");
+
+      // ตรวจสอบว่า element ที่ถูกคลิกนั้นมีคลาส 'selected' หรือไม่
+      // หาก element ที่ถูกคลิกมีคลาส 'selected' ให้ลบคลาส 'selected' ออกและลบ input[type="hidden"] ที่มีชื่อ "answer" ออก
+      if (isSelected) {
+        element.classList.remove("selected");
+        const existingHiddenInput = document.querySelector(
+          'input[name="answer"]'
+        );
+        console.log("existingHiddenInput : ".existingHiddenInput);
+        if (existingHiddenInput) {
+          console.log("existingHiddenInput : ".existingHiddenInput);
+          existingHiddenInput.parentNode.removeChild(existingHiddenInput);
+        }
+      } else {
+        // หาก element ที่ถูกคลิกไม่มีคลาส 'selected' ให้ทำการเพิ่มคลาส 'selected' และเพิ่ม input[type="hidden"]
+        // ลบ class 'selected' จากทุกๆ element ที่มี class 'answer'
+        const answerElements = document.querySelectorAll(".answer");
+        answerElements.forEach((el) => el.classList.remove("selected"));
+
+        // เพิ่ม class 'selected' ให้กับ element ที่ถูกคลิก
+        element.classList.add("selected");
+
+        // เซ็ตค่าให้กับ input[type="hidden"] เพื่อส่งค่าไปยังเซิร์ฟเวอร์
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "answer";
+        hiddenInput.value = answerNumber;
+        console.log(answerNumber);
+        document.querySelector("form").appendChild(hiddenInput);
+
+
+      }
+      // ดึง element ด้วย id
+      const answerElement = document.getElementById(answerNumber);
+      // ดึงค่าที่อยู่ใน element
+      let valueInsideElement = answerElement.innerHTML;
+
+      // แสดงค่าที่ได้ใน console
+      console.log("Value Inside Element: ", valueInsideElement);
+      console.log("Slide Index: ", slideIndex);
+      sendAnswerToServer(valueInsideElement, slideIndex);
+    }
+    function handleEnterClick(text) {
+      
+      // นำข้อมูลที่ผู้ใช้กรอกเข้าไปในการประมวลผลต่อไป
+      console.log("ข้อมูลที่ป้อน:", text);
+      sendAnswerToServer(text, slideIndex);
+      // สามารถเพิ่มโค้ดเพื่อประมวลผลข้อมูลต่อไปตามต้องการ
+  }
+
+    function sendAnswerToServer(text, questionId) {
+      // ดึงข้อมูลจาก query parameter
+      const queryParams = new URLSearchParams(window.location.search);
+      const userID = queryParams.get("userID");
+      // กำหนดข้อมูลที่ต้องการส่ง
+      console.log("text", text)
+      console.log("questionId", questionId)
+      const update = new URLSearchParams();
+      update.append('text', text);
+      update.append('questionId', questionId);
+      update.append('userID', userID);
+      console.log("data", update)
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: update,
+        redirect: "follow",
+      };
+
+      // กำหนด URL ที่ถูกต้อง
+      const url = "http://localhost:8081/UPDATEchoice.php";
+
+      fetch(url, requestOptions)
+        .then((response) => response.text())
+        .then((update) => console.log(update))
+        .catch((error) => console.error(error));
+    }
+    function INSERTToServer(questionId, userID) {
+      // กำหนดข้อมูลที่ต้องการส่ง
+      const data = new URLSearchParams();
+      data.append("questionId", questionId);
+      data.append("userID", userID);
+      //console.log("data",data)
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: data,
+        redirect: "follow",
+      };
+
+      // กำหนด URL ที่ถูกต้อง
+      const url = "http://localhost:8081/INSERTchoice.php";
+
+      fetch(url, requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    }
+    //var inputField = document.getElementById('inputField');
+    var keyboardContainer = document.getElementById('keyboard-container');
+    var showLowercase = document.getElementsByClassName('lowercase');
+    //var gridRow = document.getElementById(`grid-row${slideIndex}`); // ใช้ index [0] เพื่อเข้าถึง element เดียวเท่านั้น
+    var isUpperCase = false;
+
+    document.querySelectorAll('.input-field').forEach(function (inputField) {
+      inputField.addEventListener('click', function () {
+        var inputField = document.getElementById(`inputField${slideIndex}`);
+        var inputField10 = document.getElementById(`inputField10`);
+        //inputField10.style.width = '60%';
+        //inputField10.style.height = '10%';
+        //inputField10.style.marginBottom = '30%';
+        //inputField10.style.display = 'block';
+        keyboardContainer.style.display = 'block';
+        keyboardContainer.classList.add('show-lowercase');
+        // showLowercase.style.display = 'block';
+        keyboardContainer.style.marginBottom = '5%';
+        inputField.style.width = '60%';
+        inputField.style.height = '10%';
+        var gridRow = document.getElementById(`grid-row${slideIndex}`);
+        gridRow.style.display = 'none';
+        //var gridRow10 = document.getElementById(`grid-row10`);
+        //gridRow10.style.display = 'none';
+        inputField.style.marginBottom = '30%';
+        // if(showLowercase.style.display = 'none') {
+        //     showLowercase.style.display = 'block';
+        // }
+        // keyboardContainer.classList.toggle('show-lowercase');
+        });
+    });
+
+    document.querySelectorAll('.keyboard-key').forEach(function (key) {
+      key.addEventListener('click', function () {
+        var char = this.textContent;
+        var inputField = document.getElementById(`inputField${slideIndex}`);
+        if (char === '←') {
+          var currentText = inputField.textContent || inputField.value;
+          inputField.value = currentText.slice(0, -1);
+        } else if (char === 'Enter') {
+          // ทำอะไรสักอย่างเมื่อกด Enter
+          // ยกเลิกการปิด keyboard
+          keyboardContainer.classList.remove('show-lowercase');
+          keyboardContainer.classList.remove('show-uppercase');
+          keyboardContainer.style.display = 'none';
+          var gridRow = document.getElementById(`grid-row${slideIndex}`);
+          //inputField.style.marginBottom = '';
+          gridRow.style.display = 'grid';
+          inputField.style.removeProperty('margin-bottom'); // ลบคุณสมบัติ margin-bottom ทั้งหมด
+          
+          handleEnterClick(inputField.value)
+          //inputField.style.height = '15%';
+          //inputField.style.width = '40%';
+        }
+        else if (char === '↑') {
+          var currentText = inputField.textContent || inputField.value;
+          inputField.value = currentText + '';
+        } else {
+          var currentText = inputField.textContent || inputField.value;
+          inputField.value = currentText + char;
+        }
+      });
+    });
+
+
+    document.querySelectorAll('.keyboard-key.uppercase').forEach(function (key) {
+      key.addEventListener('click', function () {
+        var char = this.textContent;
+        var currentText = inputField.textContent || inputField.value;
+        // inputField.value = currentText + char;
+      });
+    });
+
+    document.querySelector('.keyboard-key.shift').addEventListener('click', function (event) {
+      isUpperCase = !isUpperCase;
+      if (isUpperCase) {
+        document.querySelectorAll('.keyboard-key:not(.shift)').forEach(function (key) {
+          // var normalChar = key.getAttribute('data-normal');
+          // key.textContent = normalChar.toUpperCase();
+          keyboardContainer.classList.remove('show-lowercase');
+          keyboardContainer.classList.add('show-uppercase');
+        });
+        // keyboardContainer.classList.add('show-uppercase');
+        // event.stopPropagation();
+      } else {
+        document.querySelectorAll('.keyboard-key:not(.shift)').forEach(function (key) {
+          // var normalChar = key.getAttribute('data-normal');
+          // key.textContent = normalChar.toLowerCase();
+          keyboardContainer.classList.remove('show-uppercase');
+          keyboardContainer.classList.add('show-lowercase');
+        });
+        // keyboardContainer.classList.remove('show-uppercase');
+        // event.stopPropagation();
+      }
+      event.preventDefault();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if ((event.code === '↑') && document.activeElement !== inputField) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      if ((event.code === '↑') && document.activeElement === inputField) {
+        event.preventDefault();
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+</body>
+
+</html>

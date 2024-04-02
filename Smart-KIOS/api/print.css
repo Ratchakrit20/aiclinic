@@ -1,0 +1,15 @@
+@page{
+    size:A4;
+    margin:0;
+}
+#print{
+    display: none;
+    visibility: none;
+    
+}
+.print{
+    border-radius: 0;
+    box-shadow: none;
+}
+
+

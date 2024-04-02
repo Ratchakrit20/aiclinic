@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: root1
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "9906:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+  php-apache-environment:
+    container_name: php-apache
+    build: 
+      context: ./Smart-KIOS/api
+      dockerfile: Dockerfile
+    volumes:
+      - ./Smart-KIOS/api:/var/www/html/
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+  flask:
+    build: 
+      context: ./Smart-KIOS/ai
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Smart-KIOS/ai:/app
+    
+  
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Smart-KIOS/templates:/usr/share/nginx/html
+  
+  
+      

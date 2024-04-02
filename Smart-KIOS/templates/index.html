@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        h1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #60cbf5;
+            font-size: 80px;
+            background-color: rgba(255, 255, 255, 0.488);
+            width: 100%;
+            padding: 20px;
+            margin: 0; /* เพิ่ม margin: 0 เพื่อลบขอบโค้งของ body */
+        }
+
+        h2 {
+            color: #60cbf5;
+            font-size: 80px;
+            background-color: rgba(255, 255, 255, 0.488);
+            width: 100%;
+        }
+
+        .welcome-page {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1586773860383-dab5f3bc1bcc?q=80&w=2027&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            animation: fadeIn 3s forwards;
+            /* เพิ่ม animation เข้าไป */
+            overflow: hidden; /* ป้องกันส่วนที่เกินจอไม่แสดง */
+        }
+
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .component {
+            position: relative;
+            width: 100%;
+            /* ปรับขนาดตามขนาดจอ */
+            height: 100vh;
+            /* ปรับขนาดตามขนาดจอ */
+            background-image: url('https://images.unsplash.com/photo-1586773860383-dab5f3bc1bcc?q=80&w=2027&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            /* เปลี่ยนเป็น URL ของภาพที่คุณต้องการใช้ */
+            background-size: cover;
+            /* ปรับขนาดของภาพให้เต็มพื้นที่ */
+            background-position: center;
+
+        }
+
+
+        #numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(4, 100px);
+            grid-gap: 10px;
+            justify-content: center;
+            margin-top: 10%px;
+        }
+
+        .key {
+            width: 100px;
+            height: 100px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.883);
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .key:hover {
+            background-color: #e0e0e0;
+        }
+
+        .key:active {
+            outline: 2px solid #333;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .display {
+            font-size: 36px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.883);
+            width: 60%;
+            border-radius: 5px;
+        }
+
+        .login-page {
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s ease, visibility 0s 0.5s;
+            animation: fadeIn 1s forwards;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="welcome-page">
+        <img src="https://images.unsplash.com/photo-1586773860383-dab5f3bc1bcc?q=80&w=2027&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            class="welcome-page" alt="Welcome Image" onclick="redirectToLogin()">
+        <h1>Welcome to Clinic</h1>
+    </div>
+    <div class="component hidden">
+        <div class="login-page hidden">
+            <div class="container">
+                <h2>Login</h2>
+                <div class="display" id="enteredNumbers"></div>
+                <div id="numpad">
+                    <div class="key" onclick="pressKey(1)">1</div>
+                    <div class="key" onclick="pressKey(2)">2</div>
+                    <div class="key" onclick="pressKey(3)">3</div>
+                    <div class="key" onclick="pressKey(4)">4</div>
+                    <div class="key" onclick="pressKey(5)">5</div>
+                    <div class="key" onclick="pressKey(6)">6</div>
+                    <div class="key" onclick="pressKey(7)">7</div>
+                    <div class="key" onclick="pressKey(8)">8</div>
+                    <div class="key" onclick="pressKey(9)">9</div>
+                    <div class="key" onclick="pressKey('delete')">Del</div>
+                    <div class="key" onclick="pressKey(0)">0</div>
+                    <div class="key" onclick="checkPassword()">Enter</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script></script>
+    <script>
+        let enteredNumbers = '';
+        // เมื่อหน้า welcome page โหลดเสร็จเรียกใช้ function redirectToLogin
+        window.onload = redirectToLogin;
+
+        // ฟังก์ชั่นที่ทำหน้าที่เปลี่ยนหน้า welcome เป็นหน้า login โดยอัตโนมัติ
+        function redirectToLogin() {
+            const welcomePage = document.querySelector('.welcome-page');
+            const loginPage = document.querySelector('.login-page');
+            const bg = document.querySelector('.component');
+
+            setTimeout(function () {
+                welcomePage.style.display = 'none'; // ซ่อนหน้า welcome
+                loginPage.style.display = 'block'; // แสดงหน้า login
+                bg.style.display = 'block';
+            }, 5000); // เปลี่ยนหน้าหลังจาก 6 วินาที
+        }
+
+        function pressKey(key) {
+            if (key === 'delete') {
+                enteredNumbers = enteredNumbers.slice(0, -1);
+            } else {
+                enteredNumbers += key;
+            }
+            document.getElementById('enteredNumbers').innerText = enteredNumbers;
+        }
+
+        function checkPassword() {
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow"
+            };
+
+            fetch("http://localhost:8081/read.php", requestOptions)
+                .then((response) => response.text())
+                .then((result) => {
+                    console.log(result)
+                    var jsonObj = JSON.parse(result);
+                    console.log(jsonObj);
+
+                    let found = false;
+
+                    for (let row of jsonObj) {
+                        console.log(row.userID);
+                        if (enteredNumbers === row.userID && row.role === 'user') {
+                            // Correct password, redirect to next page
+                            window.location.href = 'total-mic.html?userID=' + row.userID + "&page=1";
+                            found = true;
+                            break; // หยุดลูปเมื่อพบรหัสผ่านที่ถูกต้อง
+                        } else if (enteredNumbers === row.userID && row.role === 'admin') {
+                            window.location.href = 'select_admin.html?userID='+ row.userID;
+                            found = true;
+                            break; // หยุดลูปเมื่อเป็น admin
+                        }
+                    }
+
+                    if (!found) {
+                        // Incorrect password, display error message
+                        alert('รหัสผิด กรุณากรอกใหม่อีกครั้ง');
+                        // Clear entered password
+                        enteredNumbers = '';
+                        document.getElementById('enteredNumbers').innerText = '';
+                    }
+                })
+                .catch((error) => console.error(error));
+        }
+
+    </script>
+</body>
+
+</html>

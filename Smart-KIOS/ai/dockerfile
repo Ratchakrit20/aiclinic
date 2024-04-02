@@ -1,0 +1,29 @@
+# เลือกภาพของ Python เป็นฐาน
+FROM python:3.12.2
+
+# ติดตั้ง dependencies ที่จำเป็น
+RUN apt-get update && apt-get install -y libzmq3-dev
+# Install ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+RUN apt-get update && apt-get install -y espeak
+RUN apt-get update && apt-get install -y espeak-ng
+# ติดตั้ง libmysqlclient-dev สำหรับการเชื่อมต่อกับ MySQL
+RUN apt-get install -y default-libmysqlclient-dev
+# ติดตั้ง libespeak1
+RUN apt-get update && apt-get install -y libespeak1
+
+
+# ตั้งค่าโฟลเดอร์ทำงาน
+WORKDIR /app
+
+# คัดลอกไฟล์ requirements.txt เพื่อติดตั้ง dependencies
+COPY ./requirements.txt /app
+
+# ติดตั้ง dependencies จาก requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt 
+# คัดลอกโค้ดแอปลงใน Docker image
+COPY . .
+# ตั้งค่าการเปิดพอร์ตที่ Flask ใช้
+EXPOSE 5000
+# เรียกใช้ Flask โดยอัตโนมัติเมื่อเริ่มต้น Docker container
+CMD ["python", "app.py"]

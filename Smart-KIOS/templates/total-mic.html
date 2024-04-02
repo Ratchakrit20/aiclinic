@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>Questionnaire</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+  
+      body {
+        font-family: Verdana, sans-serif;
+        margin: 0;
+      }
+  
+      .component {
+        position: relative;
+        width: 100%;
+        /* ปรับขนาดตามขนาดจอ */
+        height: 100vh;
+        /* ปรับขนาดตามขนาดจอ */
+        background-image: url("https://plus.unsplash.com/premium_photo-1675686363460-25aa1039e94b?q=80&w=2043&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+        /* เปลี่ยนเป็น URL ของภาพที่คุณต้องการใช้ */
+        background-size: cover;
+        /* ปรับขนาดของภาพให้เต็มพื้นที่ */
+        background-position: center;
+        /* ตำแหน่งภาพให้อยู่ตรงกลาง */
+        /* filter: blur(1px); */
+        /* ทำให้ภาพเบลอ */
+        /* background-color: rgba(255, 255, 255, 0.5); */
+        /* สีพื้นหลังที่มองเห็นผ่านพื้นหลังเบลอ */
+        /* z-index:auto; */
+        /* ให้พื้นหลังเบลออยู่หน้าสุด */
+      }
+  
+      .mySlides {
+        display: none;
+        /* filter: none; */
+      }
+  
+      img {
+        vertical-align: middle;
+        margin-top: 5%;
+        margin-left: 25%;
+        /* filter: none; */
+      }
+  
+      /* Slideshow container */
+      .slideshow-container {
+        /* margin-top: 30px; */
+        width: 100%;
+        height: 90vh;
+        /* max-width: 1000px; */
+        position: relative;
+        /* margin: auto; */
+        /* filter: none; */
+      }
+  
+      .grid-container {
+        display: grid;
+        place-items: center;
+        height: 87vh;
+        /* ตั้งค่าความสูงเท่ากับความสูงของหน้าจอ */
+        /* margin-top: 70px;
+              margin-bottom: 70px; */
+      }
+  
+      .grid-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 50px;
+        place-items: center;
+      }
+  
+      .answer {
+        padding: 50px;
+        font-size: 30px;
+        font-weight: 100;
+        color: rgba(93, 92, 92, 0.801);
+        width: 500px;
+        border: 3px solid rgba(93, 92, 92, 0.801);
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.782);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+  
+      .answer:hover {
+        background-color: rgba(93, 92, 92, 0.801);
+        color: #fff;
+      }
+  
+      .answer.selected {
+        background-color: rgb(172, 245, 249);
+        color: #fff;
+        border-color: rgba(144, 147, 147, 0.811);
+      }
+  
+      /* Next & previous buttons */
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        /* height: 100%; */
+        top: 50%;
+        /* height: 100%; */
+        width: 5%;
+        padding: 80px 5%;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 50px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        /* filter: none; */
+      }
+  
+      /* Position the "next button" to the right */
+      .next {
+        /* top: 50%; */
+        right: 0;
+        border-radius: 3px 0 0 3px;
+        /* filter: none; */
+      }
+  
+      /* On hover, add a black background color with a little bit see-through */
+      .prev:hover,
+      .next:hover {
+        background-color: rgba(74, 71, 71, 0.8);
+        /* filter: none; */
+      }
+  
+      /* Caption text */
+      .text {
+        color: black;
+        background-color: rgba(252, 250, 250, 0.345);
+        font-size: 55px;
+        padding: 19px 12px;
+  
+        right: 50%;
+        height: 10%;
+  
+        /* bottom: 85%; */
+        width: auto;
+        /* text-align: center; */
+        border-radius: 10px;
+        /* filter: none; */
+      }
+  
+      /* Number text (1/3 etc) */
+      .numbertext {
+        color: #f2f2f2;
+        font-size: 35px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        /* filter: none; */
+      }
+  
+      /* The dots/bullets/indicators */
+      .dot {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        line-height: 25px;
+        border-radius: 50%;
+        border: 1px solid whitesmoke;
+        background-color: #6f6f6f;
+        text-align: center;
+        /* font-size: 12px; */
+        margin: 0 6px;
+        cursor: pointer;
+        transition: background-color 0.6s ease;
+        position: relative;
+        z-index: 1;
+      }
+  
+      .active,
+      .dot:hover {
+        background-color: #fced65;
+        /* filter: none; */
+      }
+  
+      /* Fading animation */
+      .fade {
+        animation-name: fade;
+        animation-duration: 1.5s;
+      }
+  
+      .slide-in {
+        animation-name: slide-in;
+        animation-duration: 2s;
+        animation-direction: alternate;
+        /* กำหนดทิศทางการเล่น animation เป็น alternate */
+      }
+  
+      @keyframes fade {
+        from {
+          opacity: 0.4;
+        }
+  
+        to {
+          opacity: 1;
+        }
+      }
+  
+      @keyframes slide-in {
+        from {
+          transform: translateX(-100%);
+        }
+  
+        to {
+          transform: translateX(0);
+        }
+      }
+  
+      /* ปรับสไตล์ของ label */
+      label { 
+        position: absolute;
+        bottom: 10px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+        display: block;
+        width: 30%;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        /* หากต้องการข้อความหนา */
+        color: #ffffff;
+        /* สีของข้อความ */
+        margin-bottom: 10px;
+        /* ระยะห่างด้านล่าง */
+        border: 2px solid #007bff;
+        /* ใส่เส้นขอบสีฟ้า */
+        padding: 10px;
+        /* ขอบรอบของ label */
+        border-radius: 8px;
+        /* กำหนดความโค้งของมุม */
+        box-sizing: border-box;
+        /* นำขอบนอกไปคำนวณในขนาดทั้งหมดของ label */
+        margin: 30px auto;
+        /* ทำให้ label อยู่ตรงกลาง */
+        background-color: #007bff;
+      }
+      audio{
+        position: absolute;
+        bottom: 70px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+      }
+      .buttonerror {
+        position: absolute;
+        bottom: 10px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+        right: 20px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านขวา */
+        background-color: #f1f1f1;
+        color: black;
+        border: none;
+        border-radius: 50%;
+        /* ทำให้มุมของปุ่มเป็นรูปวงกลม */
+        cursor: pointer;
+        
+      }
+      #err10{
+        position: absolute;
+        bottom: 80px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+        right: 20px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านขวา */
+      }
+      .buttonerror:hover {
+        background-color: #ddd;
+        color: black;
+      }
+  
+      .buttonerror img.microphone {
+        width: 30px;
+        /* ปรับขนาดของรูปตามที่ต้องการ */
+        height: 30px;
+        /* ให้รูปปรับสัดส่วนตามขนาดที่กำหนด */
+        border: none;
+        /* ลบแบรนด์ (border) ทั้งหมด */
+        border-radius: 50%;
+        /* ทำให้มุมของปุ่มเป็นรูปวงกลม */
+        margin: 0;
+      }
+  
+      img.finish {
+        position: absolute;
+        bottom: 10px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านล่าง */
+        right: 10px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านขวา */
+        width: 60px;
+        /* ปรับขนาดของรูปตามที่ต้องการ */
+        height: 60px;
+        /* ให้รูปปรับสัดส่วนตามขนาดที่กำหนด */
+        border: none;
+        /* ลบแบรนด์ (border) ทั้งหมด */
+        border-radius: 50%;
+        /* ทำให้มุมของปุ่มเป็นรูปวงกลม */
+        margin: 0;
+      }
+      .name {
+        position: absolute;
+        top: 10px;
+        /* ปรับค่าตำแหน่งของปุ่มจากด้านบน */
+        font-family: Arial, sans-serif; /* เลือกแบบอักษร */
+        font-size: 20px; /* ขนาดอักษร */
+        color: #333; /* สีของข้อความ */
+        text-align: center; /* จัดข้อความกลาง */
+        text-transform: uppercase; /* แปลงอักษรเป็นตัวพิมพ์ใหญ่ทั้งหมด */
+        padding: 20px; /* เพิ่มช่องว่างข้างใน */
+        background-color: #f0f0f0; /* สีพื้นหลัง */
+        border-radius: 10px; /* รูปร่างของขอบ */
+      }
+  
+      /* On smaller screens, decrease text size */
+      @media only screen and (max-width: 480px) {
+  
+        .prev,
+        .next {
+          cursor: pointer;
+          position: absolute;
+          /* height: 100%; */
+          top: 50%;
+          /* height: 100%; */
+          width: 5%;
+          padding: 30px 5%;
+          margin-top: -22px;
+          color: white;
+          font-weight: bold;
+          font-size: 40px;
+          transition: 0.6s ease;
+          border-radius: 0 3px 3px 0;
+          user-select: none;
+        }
+  
+        .next {
+          /* top: 50%; */
+          right: 0;
+          border-radius: 3px 0 0 3px;
+          /* filter: none; */
+        }
+  
+        .text {
+          position: absolute;
+          /* width: 80%; */
+          /* ปรับขนาดของ text */
+          top: 12%;
+          left: 8%;
+          width: 80%;
+          height: auto;
+          padding: 5px;
+          /* ย้าย text มาอยู่ตรงกลาง */
+          /* bottom: 10%; */
+          /* ย้าย text มาอยู่ตรงกลาง */
+          font-size: 22px;
+          align-items: center;
+          text-align: center;
+          /* ปรับให้ text มาอยู่ตรงกลาง */
+          /* filter: none; */
+        }
+  
+        .grid-row {
+          margin-top: 12%;
+          display: grid;
+          grid-template-columns: repeat(1, 1fr);
+          grid-gap: 50px;
+          grid-row-gap: 5%;
+          align-items: center;
+          justify-content: center;
+          place-items: center;
+        }
+  
+        .answer {
+          padding: 12px;
+          font-size: 18px;
+          width: 80%;
+          color: rgba(93, 92, 92, 0.801);
+          /* ปรับขนาดเพื่อให้ answer มีขนาดที่เหมาะสมกับหน้าจอ */
+          border: 2px solid rgba(93, 92, 92, 0.801);
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.782);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+  
+        .dot {
+          display: inline-block;
+          width: 22px;
+          height: 22px;
+          line-height: 25px;
+          border-radius: 50%;
+          border: 1px solid whitesmoke;
+          background-color: #6f6f6f;
+          text-align: center;
+          /* font-size: 12px; */
+          margin: 0 1px;
+          cursor: pointer;
+          transition: background-color 0.6s ease;
+          position: relative;
+          z-index: 1;
+        }
+        .name {
+          font-size: 10px;
+        }
+      }
+  
+      @media (min-width: 481px) and (max-width: 767px) {
+  
+        .prev,
+        .next {
+          cursor: pointer;
+          position: absolute;
+          /* height: 100%; */
+          top: 50%;
+          /* height: 100%; */
+          width: 5%;
+          padding: 30px 5%;
+          margin-top: -22px;
+          color: white;
+          font-weight: bold;
+          font-size: 40px;
+          transition: 0.6s ease;
+          border-radius: 0 3px 3px 0;
+          user-select: none;
+        }
+  
+        .next {
+          /* top: 50%; */
+          right: 0;
+          border-radius: 3px 0 0 3px;
+          /* filter: none; */
+        }
+  
+        .text {
+          position: absolute;
+          /* width: 80%; */
+          /* ปรับขนาดของ text */
+          top: 12%;
+          left: 8%;
+          width: 80%;
+          height: auto;
+          padding: 5px;
+          /* ย้าย text มาอยู่ตรงกลาง */
+          /* bottom: 10%; */
+          /* ย้าย text มาอยู่ตรงกลาง */
+          font-size: 26px;
+          align-items: center;
+          text-align: center;
+          /* ปรับให้ text มาอยู่ตรงกลาง */
+          /* filter: none; */
+        }
+  
+        .grid-row {
+          margin-top: 12%;
+          display: grid;
+          grid-template-columns: repeat(1, 1fr);
+          grid-gap: 50px;
+          grid-row-gap: 5%;
+          align-items: center;
+          justify-content: center;
+          place-items: center;
+        }
+  
+        .answer {
+          padding: 13px;
+          font-size: 20px;
+          width: 90%;
+          color: rgba(93, 92, 92, 0.801);
+          /* ปรับขนาดเพื่อให้ answer มีขนาดที่เหมาะสมกับหน้าจอ */
+          border: 2px solid rgba(93, 92, 92, 0.801);
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.782);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+  
+        .dot {
+          display: inline-block;
+          width: 24px;
+          height: 24px;
+          line-height: 25px;
+          border-radius: 50%;
+          border: 1px solid whitesmoke;
+          background-color: #6f6f6f;
+          text-align: center;
+          /* font-size: 12px; */
+          margin: 0 2px;
+          cursor: pointer;
+          transition: background-color 0.6s ease;
+          position: relative;
+          z-index: 1;
+        }
+        .name {
+          font-size: 16px;
+        }
+      }
+  
+      /* Media Query for Tablets Ipads portrait mode */
+      @media (min-width: 768px) and (max-width: 1024px) {
+  
+        .prev,
+        .next {
+          cursor: pointer;
+          position: absolute;
+          /* height: 100%; */
+          top: 50%;
+          /* height: 100%; */
+          width: 5%;
+          padding: 30px 5%;
+          margin-top: -22px;
+          color: white;
+          font-weight: bold;
+          font-size: 40px;
+          transition: 0.6s ease;
+          border-radius: 0 3px 3px 0;
+          user-select: none;
+        }
+  
+        .next {
+          /* top: 50%; */
+          right: 0;
+          border-radius: 3px 0 0 3px;
+          /* filter: none; */
+        }
+  
+        .text {
+          position: absolute;
+          /* width: 80%; */
+          /* ปรับขนาดของ text */
+          top: 18%;
+          left: 8%;
+          width: 80%;
+          height: auto;
+          padding: 5px;
+          /* ย้าย text มาอยู่ตรงกลาง */
+          /* bottom: 10%; */
+          /* ย้าย text มาอยู่ตรงกลาง */
+          font-size: 30px;
+          align-items: center;
+          text-align: center;
+          /* ปรับให้ text มาอยู่ตรงกลาง */
+          /* filter: none; */
+        }
+  
+        .grid-row {
+          margin-top: 12%;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-gap: 0;
+          grid-row-gap: 5%;
+          align-items: center;
+          justify-content: center;
+          place-items: center;
+        }
+  
+        .answer {
+          padding: 23px;
+          font-size: 24px;
+          width: 80%;
+          color: rgba(93, 92, 92, 0.801);
+          /* ปรับขนาดเพื่อให้ answer มีขนาดที่เหมาะสมกับหน้าจอ */
+          border: 2px solid rgba(93, 92, 92, 0.801);
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.782);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+  
+        .dot {
+          display: inline-block;
+          width: 26px;
+          height: 26px;
+          line-height: 25px;
+          border-radius: 50%;
+          border: 1px solid whitesmoke;
+          background-color: #6f6f6f;
+          text-align: center;
+          /* font-size: 12px; */
+          margin: 0 3px;
+          cursor: pointer;
+          transition: background-color 0.6s ease;
+          position: relative;
+          z-index: 1;
+        }
+  
+        .grid-container {
+          display: grid;
+          place-items: center;
+          height: 87vh;
+          /* ตั้งค่าความสูงเท่ากับความสูงของหน้าจอ */
+          /* margin-top: 70px;
+              margin-bottom: 70px; */
+        }
+        .name {
+          font-size: 18px;
+        }
+      }
+  
+      /* Media Query for Laptops and Desktops */
+      @media (min-width: 1025px) and (max-width: 1280px) {
+  
+        .prev,
+        .next {
+          cursor: pointer;
+          position: absolute;
+          /* height: 100%; */
+          top: 50%;
+          /* height: 100%; */
+          width: 5%;
+          padding: 30px 5%;
+          margin-top: -22px;
+          color: white;
+          font-weight: bold;
+          font-size: 40px;
+          transition: 0.6s ease;
+          border-radius: 0 3px 3px 0;
+          user-select: none;
+        }
+  
+        .next {
+          /* top: 50%; */
+          right: 0;
+          border-radius: 3px 0 0 3px;
+          /* filter: none; */
+        }
+  
+        .text {
+          position: absolute;
+          /* width: 80%; */
+          /* ปรับขนาดของ text */
+          top: 18%;
+          left: 8%;
+          width: 80%;
+          height: auto;
+          padding: 5px;
+          /* ย้าย text มาอยู่ตรงกลาง */
+          /* bottom: 10%; */
+          /* ย้าย text มาอยู่ตรงกลาง */
+          font-size: 34px;
+          align-items: center;
+          text-align: center;
+          /* ปรับให้ text มาอยู่ตรงกลาง */
+          /* filter: none; */
+        }
+  
+        .grid-row {
+          margin-top: 12%;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-gap: 50px;
+          grid-row-gap: 5%;
+          align-items: center;
+          justify-content: center;
+          place-items: center;
+        }
+  
+        .dot {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          line-height: 25px;
+          border-radius: 50%;
+          border: 1px solid whitesmoke;
+          background-color: #6f6f6f;
+          text-align: center;
+          /* font-size: 12px; */
+          margin: 0 5px;
+          cursor: pointer;
+          transition: background-color 0.6s ease;
+          position: relative;
+          z-index: 1;
+        }
+  
+        .answer {
+          padding: 25px;
+          font-size: 26px;
+          font-weight: 100;
+          color: rgba(93, 92, 92, 0.801);
+          width: 300px;
+          border: 3px solid rgba(93, 92, 92, 0.801);
+          border-radius: 8px;
+          background-color: rgba(255, 255, 255, 0.782);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+      }
+  
+      .container {
+        /* เพิ่มบรรทัดนี้ */
+        text-align: center;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        /* จัดให้อยู่ตรงกลางแนวนอน */
+        align-items: center;
+        /* จัดให้อยู่ตรงกลางแนวดิ่ง */
+        height: 80vh;
+  
+        /* กำหนดความสูงของ container เป็น 100% ของ viewport height */
+      }
+  
+      .pulse-button {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #007bff;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        position: absolute;
+        /* เปลี่ยนจาก relative เป็น absolute */
+        top: 45%;
+        /* จัดตำแหน่งแนวดิ่งตรงกลาง */
+        /* left: 42%; */
+        /* จัดตำแหน่งแนวนอนตรงกลาง */
+        transform: translate(-50%, -50%);
+        /* ใช้ transform เพื่อปรับตำแหน่งให้อยู่ตรงกลาง */
+        animation: pulse 1.5s infinite;
+      }
+  
+  
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+        }
+  
+        70% {
+          transform: scale(1.2);
+          box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+        }
+  
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+        }
+      }
+  
+      .pulse-button.pulse-active {
+        animation: pulse-active 1.5s infinite;
+        background-color: red;
+      }
+  
+      @keyframes pulse-active {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+        }
+  
+        70% {
+          transform: scale(1.2);
+          box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+        }
+  
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+        }
+      }
+
+      
+    </style>
+  </head>
+
+  <body>
+    <div class="component">
+      <div class="slideshow-container">
+        <script>
+          const requestOptions = {
+            method: "GET",
+            redirect: "follow",
+          };
+          fetch(
+            "http://localhost:8081/question.php",
+            requestOptions
+          )
+            .then((response) => response.text())
+            .then((result) => {
+              // นำข้อมูลที่ได้มาใส่ใน element ที่มี id เป็น 'Question1'
+              var jsonObj = JSON.parse(result);
+              console.log(jsonObj[0].question);
+              document.getElementById("Question1").innerHTML =
+                jsonObj[0].question;
+              document.getElementById("Question2").innerHTML =
+                jsonObj[1].question;
+              document.getElementById("Question3").innerHTML =
+                jsonObj[2].question;
+              document.getElementById("Question4").innerHTML =
+                jsonObj[3].question;
+              document.getElementById("Question5").innerHTML =
+                jsonObj[4].question;
+              document.getElementById("Question6").innerHTML =
+                jsonObj[5].question;
+              document.getElementById("Question7").innerHTML =
+                jsonObj[6].question;
+              document.getElementById("Question8").innerHTML =
+                jsonObj[7].question;
+              document.getElementById("Question9").innerHTML =
+                jsonObj[8].question;
+              document.getElementById("Question10").innerHTML =
+                jsonObj[9].question;
+            })
+            .catch((error) => console.error(error));
+            const queryParams = new URLSearchParams(window.location.search);
+            const userID = queryParams.get("userID");
+            const data = new URLSearchParams();
+            
+            data.append("userID", userID);
+            //console.log("data",data)
+            const requestOptions1 = {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: data,
+              redirect: "follow",
+            };
+            
+            fetch("http://localhost:8081/SELECTuser.php", requestOptions1)
+              .then((response) => response.text())
+              .then((result) => {
+                console.log(result)
+                var jsonObj = JSON.parse(result);
+                console.log("jsonObj", jsonObj);
+                console.log("result", jsonObj.users[0].name);
+                console.log("name"+jsonObj.users.length);
+                for (let i = 0; i < 10; i++) {
+                 document.getElementById(`name${i+1}`).innerHTML = jsonObj.users[0].name+" "+jsonObj.users[0].lastname;
+                }
+                
+              })
+              .catch((error) => console.error(error));
+        </script>
+        <div class="mySlides fade">
+          <div class="numbertext">1 / 10</div>
+          <div class="text" id="Question1"></div>
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name1" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio1"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="1"></label>
+          </div>
+          
+          <button id="err1" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">2 / 10</div>
+          <div class="text" id="Question2"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name2" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio2"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="2"></label>
+          </div>
+          <button id="err2" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">3 / 10</div>
+          <div class="text" id="Question3"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name3" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio3"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="3"></label>
+          </div>
+          <button id="err3" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">4 / 10</div>
+          <div class="text" id="Question4"></div>
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name4" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio4"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="4"></label>
+          </div>
+          <button id="err4" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">5 / 10</div>
+          <div class="text" id="Question5"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name5" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio5"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="5"></label>
+          </div>
+          <button id="err5" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">6 / 10</div>
+          <div class="text" id="Question6"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name6" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio6"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="6"></label>
+          </div>
+          <button id="err6" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+        <div class="mySlides fade">
+          <div class="numbertext">7 / 10</div>
+          <div class="text" id="Question7"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name7" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio7"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="7"></label>
+          </div>
+          <button id="err7" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">8 / 10</div>
+          <div class="text" id="Question8"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name8" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio8"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="8"></label>
+          </div>
+          <button id="err8" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+
+        <div class="mySlides fade">
+          <div class="numbertext">9 / 10</div>
+          <div class="text" id="Question9"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name9" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio9"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="9"></label>
+          </div>
+          <button id="err9" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <!-- </form> -->
+        </div>
+        <div class="mySlides fade">
+          <div class="numbertext">10 / 10</div>
+          <div class="text" id="Question10"></div>
+          
+          <!-- <form action="/answer" method="POST"> -->
+          <div class="container">
+            <div id="name10" class="name"></div>
+            <button class="microphoneButton pulse-button"></button>
+            <audio
+            id="audio10"
+            controls
+            autoplay
+            style="display: none; margin: 25px auto"
+          ></audio>
+          <label for="inputField" id="10"></label>
+          </div>
+          <button id="err10" class="buttonerror" onclick="showbuttonerr()">
+            <img
+              class="microphone"
+              src="pic\microphone.png"
+              alt="microphone disconnect"
+            />
+          </button>
+          <img
+            class="finish"
+            src="pic\finish.png"
+            alt="microphone disconnect"
+            onclick="finish()"
+          />
+          <script>
+            function finish() {
+              // ดึงข้อมูลจาก query parameter
+              const queryParams = new URLSearchParams(window.location.search);
+              const userID = queryParams.get("userID");
+
+              // สร้าง URL พร้อมกับพารามิเตอร์
+              var url = "pressure.html?userID=" + userID;
+
+              // ลิ้งไปยังหน้าเว็บใหม่
+              window.location.href = url;
+            }
+          </script>
+          <!-- </form> -->
+        </div>
+
+        <a class="prev" onclick="plusSlides(-1)">❮</a>
+        <a class="next" onclick="plusSlides(1)">❯</a>
+      </div>
+
+      <br />
+
+      <div style="text-align: center">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+        <span class="dot" onclick="currentSlide(6)"></span>
+        <span class="dot" onclick="currentSlide(7)"></span>
+        <span class="dot" onclick="currentSlide(8)"></span>
+        <span class="dot" onclick="currentSlide(9)"></span>
+        <span class="dot" onclick="currentSlide(10)"></span>
+      </div>
+    </div>
+    <!-- </div> -->
+
+    <script>
+      const show = new URLSearchParams(window.location.search);
+      const page = parseInt(show.get("page")); // แปลงค่า page เป็นตัวเลขจาก string
+      let prevSlideIndex = [];
+      let slideIndex = page;
+      const userIDpage = show.get("userID");
+      const datapage = new URLSearchParams();
+      datapage.append("userID", userIDpage);
+      console.log(datapage)
+      const checkpage = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: datapage,
+        redirect: "follow",
+      };
+    fetch(
+        "http://localhost:8081/SELECTanswer_report.php",
+        checkpage
+      )
+    .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+    .then((result) => {
+            if (result.length === 0) {
+                throw new Error("No data found");
+            }
+            console.log("result"+result)
+
+          var jsonObj = JSON.parse(result);
+          console.log("jsonObj", jsonObj);
+          console.log(jsonObj.users[0]);
+          console.log(jsonObj.users.length);
+          // วนลูปเพื่อกำหนดค่าใน document.getElementById
+          for (let i = 0; i <jsonObj.users.length; i++) {
+            //console.log(questionId);
+            prevSlideIndex.push(parseInt(jsonObj.users[i].questionID));
+            
+          }
+          showSlides(slideIndex);
+        })
+    .catch((error) => {
+      showSlides(slideIndex);
+      console.error(error);
+    });
+      
+      
+
+      function plusSlides(n) {
+        showSlides((slideIndex += n));
+      }
+
+      function currentSlide(n) {
+        showSlides((slideIndex = n));
+      }
+
+      function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        const queryParams = new URLSearchParams(window.location.search);
+        const userID = queryParams.get("userID");
+        console.log("prevSlideIndex.length", prevSlideIndex.length);
+        console.log("prevSlideIndex", prevSlideIndex);
+        let isIndexChanged = true; // สร้างตัวแปรเพื่อตรวจสอบว่ามีการเปลี่ยน slideIndex หรือไม่
+
+        // ตรวจสอบว่า slideIndex มีการเปลี่ยนแปลงหรือไม่
+        for (let i = 0; i < prevSlideIndex.length; i++) {
+          if (n === prevSlideIndex[i]) {
+            console.log("prevSlideIndex"+prevSlideIndex[i])
+            isIndexChanged = false;
+            break;
+          }
+        }
+
+        if (isIndexChanged) {
+          INSERTToServer(n, userID);
+          prevSlideIndex.push(n);
+        }
+        if (n > slides.length) {
+          slideIndex = 1;
+        }
+        if (n < 1) {
+          slideIndex = slides.length;
+        }
+        for (i = 0; i < slides.length; i++) {
+          slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+          dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " active";
+      }
+
+      let isRecording = false;
+      let mediaRecorder;
+      let recordedChunks = [];
+
+      document.querySelectorAll(".microphoneButton").forEach((button) => {
+        button.addEventListener("click", function () {
+          toggleRecording(button);
+        });
+      });
+
+      function toggleRecording(button) {
+        const isActive = button.classList.contains("pulse-active");
+        if (!isActive) {
+          startRecording();
+          button.classList.add("pulse-active");
+        } else {
+          stopRecording();
+          button.classList.remove("pulse-active");
+        }
+      }
+
+      function startRecording() {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices
+            .getUserMedia({
+              audio: {
+                echoCancellation: false,
+                autoGainControl: false,
+                noiseSuppression: false,
+              },
+            })
+            .then(function (stream) {
+              mediaRecorder = new MediaRecorder(stream);
+              mediaRecorder.ondataavailable = function (e) {
+                recordedChunks.push(e.data);
+              };
+              mediaRecorder.onstop = function () {
+                const blob = new Blob(recordedChunks, { type: "audio/mp3" });
+                let reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function () {
+                  let base64String = reader.result;
+                  console.log('Base64 String - ', base64String);
+          
+                  // Simply Print the Base64 Encoded String, 
+                  // without additional data: Attributes. 
+                  console.log('Base64 String without Tags- ',
+                  base64String.substr(base64String.indexOf(', ') + 1));
+                }
+                // Save the audio file to the server
+                saveAudioFile(blob);
+
+                recordedChunks = [];
+              };
+              mediaRecorder.start();
+              isRecording = true;
+            })
+            .catch(function (err) {
+              console.error("ไม่สามารถเปิดไมค์ได้: ", err);
+              alert(
+                "ไม่สามารถเปิดไมค์ได้ สามารถกดไอคอนรูปไมค์มุมล่างขวาเพื่อทำแบบสอบถามต่อไป"
+              );
+            });
+        } else {
+          alert(
+            "ไม่สนับสนุนการเชื่อมต่อไมค์ในเบราว์เซอร์นี้ สามารถกดไอคอนรูปไมค์มุมล่างขวาเพื่อทำแบบสอบถามต่อไป"
+          );
+          
+          console.error(
+            "ไม่สนับสนุนการเชื่อมต่อไมค์ในเบราว์เซอร์นี้ สามารถกดไอคอนรูปไมค์มุมล่างขวาเพื่อทำแบบสอบถามต่อไป"
+          );
+        }
+      }
+      function showbuttonerr() {
+        // ดึงข้อมูลจาก query parameter
+        const queryParams = new URLSearchParams(window.location.search);
+        const userID = queryParams.get("userID");
+
+        // สร้าง URL พร้อมกับพารามิเตอร์
+        var url = "total-page.html?userID=" + userID + "&page="+slideIndex;
+
+        // ลิ้งไปยังหน้าเว็บใหม่
+        window.location.href = url;
+      }
+      
+      function INSERTToServer(questionId, userID) {
+        // กำหนดข้อมูลที่ต้องการส่ง
+        const data = new URLSearchParams();
+        data.append("questionId", questionId);
+        data.append("userID", userID);
+        //console.log("data",data)
+        const requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: data,
+          redirect: "follow",
+        };
+
+        // กำหนด URL ที่ถูกต้อง
+        const url = "http://localhost:8081/INSERTchoice.php";
+
+        fetch(url, requestOptions)
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.error(error));
+      }
+
+      function saveAudioFile(blob) {
+        // ดึงข้อมูลจาก query parameter
+        const queryParams = new URLSearchParams(window.location.search);
+        const userID = queryParams.get("userID");
+        // เพิ่มพารามิเตอร์คิวรีที่สุ่มให้ URL เพื่อให้ได้การรีเฟรช
+        const randomQueryParam = Math.random().toString(36).substring(7);
+        
+
+        // Create FormData object to send the blob to the server
+        const formData = new FormData();
+        const fileName = `${userID}_${slideIndex}.mp3`;
+        formData.append("audio", blob, fileName);
+        formData.append("userID", userID); // เพิ่ม userID เข้า FormData
+        formData.append("slideIndex", slideIndex); // เพิ่ม slideIndex เข้า FormData
+        console.log(formData); // ตรวจสอบขนาดของ Blob
+        const filenameoutload = "output1.wav"
+        
+        console
+        .log(userID);
+        // Make a fetch request to the server to save the audio file
+        fetch("http://localhost:5000/upload" , {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json()) // แก้ตรงนี้
+          .then((data) => {
+            //console.log("Response from server:", data);
+            //callPythonFunction(userID, slideIndex);
+            const audioUrl =  
+            "http://localhost:5000/play/" + filenameoutload+ "?" + randomQueryParam;;
+            
+            console.log("รับข้อมูลจาก Python:", data);
+            // ตรวจสอบว่ามีข้อมูล nextpage หรือไม่
+            if (data.nextpage) {
+              // ทำการเปลี่ยนหน้าไปที่ index1.html
+              //window.location.href = data.nextpage;
+              console.log(data.nextpage);
+              //ไว้แทรกบนหน้าเว็บ
+              document.getElementById(slideIndex).innerHTML = data.nextpage;
+              document.getElementById(`audio${slideIndex}`).style.display = "block";
+              document.getElementById(`audio${slideIndex}`).src =audioUrl;
+              
+            } else {
+              // ไม่มีข้อมูล nextpage, ทำตามที่คุณต้องการ
+              console.log("ไม่มีข้อมูล nextpage");
+            }
+          })
+          .catch((error) => {
+            console.error("Error saving audio file:", error);
+          });
+      }
+
+      
+
+      function stopRecording() {
+        mediaRecorder.stop();
+        isRecording = false;
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  </body>
+</html>

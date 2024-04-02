@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- เพิ่ม link ไปยัง DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css" />
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- เพิ่ม script ไปยัง DataTables JS -->
+    <script type="text/javascript" src="https://cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            transition: background-color 0.5s ease;
+            overflow: hidden;
+        }
+
+        h1 {
+            /* margin-right: 1%; */
+            padding: 0 2% 0 1%;
+        }
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 1%;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            /* เพิ่มบรรทัดนี้ */
+            flex-grow: 1;
+            /* เพิ่มบรรทัดนี้ */
+        }
+        img.home-button{
+            width: 50px; /* ปรับขนาดรูปภาพตามที่ต้องการ */ 
+            position: absolute; /* ให้รูปอยู่ในโพรงของ navbar-brand */
+            left: 10px; /* ปรับตำแหน่งรูปภาพให้อยู่ด้านซ้ายของ navbar-brand */
+            margin: 5px;
+            top: 6.5%; /* ปรับตำแหน่งรูปภาพให้อยู่ตรงกลางตามความสูงของ navbar-brand */
+            transform: translateY(-50%); /* ปรับตำแหน่งรูปภาพให้อยู่ตรงกลางตามความสูงของ navbar-brand */
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            padding: 0 1% 0 2%;
+        }
+
+        .night-mode-toggle {
+            position: relative;
+            margin-right: 5%;
+            padding: 0 1% 0 0;
+        }
+
+        .night-mode-toggle input[type="checkbox"] {
+            display: none;
+        }
+
+        .night-mode-toggle label {
+            display: block;
+            width: 60px;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            cursor: pointer;
+            position: absolute;
+            /* right: 0; */
+            /* top: 0%; */
+            transform: translateY(-50%);
+        }
+
+        .night-mode-toggle label::after {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 30px;
+            background-image: url('pic/sun.png');
+            background-size: cover;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            transition: background-image 0.3s ease, transform 0.3s ease;
+            /* เพิ่ม transition */
+        }
+
+        .night-mode-toggle input[type="checkbox"]:checked+label::after {
+            transform: translate(100%, -50%);
+            background-image: url('pic/moon.png');
+        }
+
+        #night-mode-checkbox:checked+.night-mode-toggle .moon-icon {
+            opacity: 1;
+        }
+
+        #night-mode-checkbox:checked+.night-mode-toggle .sun-icon {
+            opacity: 0;
+        }
+        /*--------------------------------------------------------------------*/
+        .Switch-mode-toggle {
+            position: relative;
+            margin-right: 5%;
+            padding: 0 1% 0 0;
+        }
+
+        .Switch-mode-toggle input[type="checkbox"] {
+            display: none;
+        }
+
+        .Switch-mode-toggle label {
+            display: block;
+            width: 60px;
+            height: 30px;
+            background-color: #555;
+            border-radius: 15px;
+            cursor: pointer;
+            position: absolute;
+            /* right: 0; */
+            /* top: 0%; */
+            transform: translateY(-50%);
+        }
+
+        .Switch-mode-toggle label::after {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 30px;
+            background-image: url('pic/arrow.png');
+            background-size: cover;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            transition: background-image 0.3s ease, transform 0.3s ease;
+            /* เพิ่ม transition */
+        }
+
+        .Switch-mode-toggle input[type="checkbox"]:checked+label::after {
+            transform: translate(100%, -50%);
+            background-image: url('pic/arrow.png');
+        }
+
+        #Switch-mode-checkbox:checked+.Switch-mode-toggle .moon-icon {
+            opacity: 1;
+        }
+
+        #Switch-mode-checkbox:checked+.Switch-mode-toggle .sun-icon {
+            opacity: 0;
+        }
+
+        body.dark-mode {
+            background-color: #222;
+        }
+
+        .navbar.dark-mode {
+            background-color: #444;
+        }
+
+        .content.dark-mode {
+            background-color: #333;
+        }
+
+        .left-panel.dark-mode,
+        .right-panel.dark-mode {
+            background-color: #555;
+        }
+
+        .panel-link.dark-mode {
+            color: #ddd;
+        }
+
+        .panel-link.dark-mode:hover {
+            color: #ddd;
+            transform: scale(1.05);
+        }
+
+        .button.dark-mode {
+            background-color: #333;
+            color: #ddd;
+        }
+
+        .button.dark-mode:hover {
+            color: #ddd;
+            /* transform: scale(5); */
+        }
+
+        .dark-mode .button.dark-mode {
+            color: #ddd;
+            /* เพิ่มส่วนนี้เพื่อเปลี่ยนสีข้อความใน dark mode */
+        }
+
+        .admin-selecte.dark-mode {
+            background-color: #555;
+        }
+
+        .admin-selecte1.dark-mode {
+            background-color: #555;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 70px);
+            padding: 20px;
+            transition: background-color 0.5s ease;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-panel,
+        .right-panel {
+            flex-basis: 40%;
+            /* ลดความกว้างของ panel เป็น 40% */
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin: 0 20px;
+            /* เพิ่มระยะห่างระหว่าง panel */
+            height: 500px;
+            /* animation: fadeOut 3s forwards; */
+        }
+
+        #clickButton {
+            bottom: 0%;
+            /* ย้ายปุ่มไปไว้ที่ด้านล่างสุด */
+        }
+
+        .panel-link {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            /* ปรับขนาดตัวอักษร */
+            z-index: 999;
+            /* ให้ปุ่ม Back อยู่ด้านหน้า */
+        }
+
+        .panel-link:hover {
+            color: #555;
+            transform: scale(1.05);
+        }
+
+        .button {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            width: 15%;
+            height: 5vh;
+            font-size: 20px;
+            /* ปรับขนาดตัวอักษร */
+            z-index: 999;
+            /* ให้ปุ่ม Back อยู่ด้านหน้า */
+        }
+
+        .button:hover {
+            color: #555;
+            /* transform: scale(1.05); */
+        }
+
+        .left-panel,
+        .right-panel {
+            position: relative;
+        }
+
+        .left-panel .button,
+        .right-panel .button {
+            position: absolute;
+            bottom: 2%;
+            left: 50%;
+            /* ย้ายไปที่จุดกลางด้านซ้ายของพื้นที่ */
+            transform: translateX(-50%);
+            /* ย้ายไปที่จุดกลางตามแนวนอน */
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            z-index: 999;
+            width: 30%;
+            overflow: hidden;
+            /* ให้ปุ่ม Back อยู่ด้านหน้า */
+        }
+
+        @keyframes slideLeft {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(100%);
+            }
+        }
+
+        .left-panel.slide-left {
+            animation: slideLeft 0.5s forwards;
+        }
+
+        .right-panel.slide-right {
+            animation: slideRight 0.5s forwards;
+        }
+
+        .left-panel.slide-left,
+        .right-panel.slide-right {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            /* pointer-events: none; */
+            /* Disable pointer events during the transition */
+        }
+
+        .admin-selecte {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f9f9f9;
+            transition: background-color 0.5s ease;
+            width: 85%;
+            height: auto;
+            /* max-width: 800px; */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            display: block;
+            animation: fadeIn 3s forwards;
+        }
+
+        /* .admin-selecte {
+            position: relative;
+        } */
+
+        .admin-selecte .button {
+            position: absolute;
+            bottom: 1%;
+            left: 1%;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            z-index: 999;
+        }
+
+        .admin-selecte1 {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f9f9f9;
+            transition: background-color 0.5s ease;
+            width: 85%;
+            height: auto;
+            /* max-width: 800px; */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            display: block;
+            animation: fadeIn 3s forwards;
+        }
+
+        /* .admin-selecte1 {
+            position: relative;
+        } */
+
+        .admin-selecte1 .button {
+            position: absolute;
+            bottom: 1%;
+            left: 1%;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            z-index: 999;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .back {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            /* ปรับขนาดตัวอักษร */
+        }
+
+        @keyframes slideLeftBack {
+            from {
+                transform: translateX(-100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideRightBack {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .left-panel.slide-left-back {
+            animation: slideLeftBack 0.5s forwards;
+        }
+
+        .right-panel.slide-right-back {
+            animation: slideRightBack 0.5s forwards;
+        }
+
+        .left-panel.slide-left-back,
+        .right-panel.slide-right-back {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            /* pointer-events: none; */
+            /* Disable pointer events during the transition */
+        }
+
+        /* /////////////////////////////////////////////////////////////////////////////////////// */
+
+        .container {
+            width: 80%;
+            /* height: 100vh; */
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            /* margin-top: 30px; */
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        form {
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.681);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        form:hover {
+            background-color: #f5f5f5;
+        }
+
+
+
+        /* .table-ani{
+            transition: all 0.3s ease;
+        } */
+
+        table {
+            width: auto;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.681);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+            transition: all 0.3s ease;
+        }
+
+        .delete-form {
+            display: inline-block;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .flex-container .button1 {
+            flex: 1 0 60px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+
+        .id {
+            flex: 1 0 140px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .text {
+            flex: 1 0 120px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        
+
+        .img {
+            position: absolute;
+            left: 50%;
+            /* ย้ายไปที่จุดกลางด้านซ้ายของพื้นที่ */
+            transform: translateX(-50%);
+            /* ย้ายไปที่จุดกลางตามแนวนอน */
+            width: 90%;
+            /* height: 10vh; */
+        }
+        /* .img:hover {
+            transform: scale(1);
+
+        } */
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 80%;
+            }
+
+            form {
+                width: 80%;
+                margin: 0 auto 20px auto;
+            }
+
+            form input[type="text"] {
+                width: calc(100% - 20px);
+            }
+
+            table {
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img
+            class="home-button"
+            src="pic\home-button.png"
+            alt="microphone disconnect"
+            onclick="finish()"
+            />
+            <script>
+                function finish() {
+                var url = "index.html";
+
+                // ลิ้งไปยังหน้าเว็บใหม่
+                window.location.href = url;
+                }
+            </script>
+            <div class="night-mode-toggle">
+                <input type="checkbox" id="night-mode-checkbox">
+                <label for="night-mode-checkbox"></label>
+            </div>
+            <h1 id="adminid">Admin Name</h1>
+            <img src="pic\software-engineer.png" alt="Admin Avatar" class="avatar">
+        </div>
+    </nav>
+    <div class="admin-selecte hidden">
+        <div class="container">
+            <table id="yourTableId" >
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>รหัสนักศึกษา</th>
+                        <th>ชื่อ</th>
+                        <th>นามสกุล</th>
+                        <th>บทบาท</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- ข้อมูลจะถูกเพิ่มที่นี่ -->
+                </tbody>
+            </table>
+            <script>
+                const queryParams = new URLSearchParams(window.location.search);
+                const userID = queryParams.get("userID");
+                const requestOptions = {
+                    method: "GET",
+                    redirect: "follow",
+                  };
+
+                fetch(
+                    "http://localhost:8081/read.php",
+                    requestOptions
+                )
+                    .then((response) => response.json())
+                    .then((result) => {
+                        if (result) {
+                            result.forEach((q) => {
+                                if(q.userID === userID){
+                                    document.getElementById('adminid').innerHTML =
+                                    q.name + " " + q.lastname;
+                                }
+                                var tr = document.createElement("tr");
+
+                                var tduserID = document.createElement("td");
+                                tduserID.textContent = q.userID;
+                                tr.appendChild(tduserID);
+
+                                var tdclinicID = document.createElement("td");
+                                tdclinicID.textContent = q.clinicID; // แก้ตรงนี้
+                                tr.appendChild(tdclinicID);
+
+                                var tdname = document.createElement("td");
+                                tdname.textContent = q.name;
+                                tr.appendChild(tdname);
+
+                                var tdlastname = document.createElement("td");
+                                tdlastname.textContent = q.lastname;
+                                tr.appendChild(tdlastname);
+
+                                var tdrole = document.createElement("td");
+                                tdrole.textContent = q.role;
+                                tr.appendChild(tdrole);
+
+                                document
+                                    .getElementById("yourTableId")
+                                    .getElementsByTagName("tbody")[0]
+                                    .appendChild(tr);
+                            });
+
+                            $(document).ready(function () {
+                                if (!$.fn.DataTable.isDataTable("#yourTableId")) {
+                                    $("#yourTableId").DataTable({
+                                        data: result,
+                                        columns: [
+                                            { data: "userID" },
+                                            { data: "clinicID" },
+                                            { data: "name" },
+                                            { data: "lastname" },
+                                            { data: "role" },
+                                        ],
+                                        paging: true,
+                                        language: {
+                                            paginate: {
+                                                first: "First",
+                                                previous: "Back",
+                                                next: "Next",
+                                                last: "Last",
+                                            },
+                                        },
+                                    });
+                                }
+                            });
+                        }
+                    })
+                    .catch((error) => console.error(error));
+            </script>
+            <form onsubmit="event.preventDefault(); sendUpdateuserToServer();">
+                <div class="flex-container">
+                    <input class="id" type="text" id="clinicID" name="userID" placeholder="รหัสนักศึกษา" required />
+                    <input class="text" type="text" id="name" name="name" placeholder="ชื่อ" required />
+                    <input class="id" type="text" id="lastname" name="lastname" placeholder="นามสกุล" required />
+                    <input class="text" type="text" id="role" name="role" placeholder="บทบาท" required />
+                    <button class="button1" type="submit">Add a Patient</button>
+                </div>
+            </form>
+            <br>
+            <button class="button clickButtonBack">Back</button>
+        </div>
+    </div>
+    <div class="admin-selecte1 hidden">
+        <h2>Admin Page</h2>
+        <div class="container">
+            <table id="yourTableId1">
+                <thead>
+                    <tr>
+                        <th>Question ID</th>
+                        <th>Question</th>
+                        <th>Answer ID</th>
+                        <th>Answer Text</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- ข้อมูลจะถูกเพิ่มที่นี่ -->
+                </tbody>
+            </table>
+            <script>
+                function goBack() {
+                    window.history.back();
+                }
+        
+                const requestOptions1 = {
+                    method: "GET",
+                    redirect: "follow",
+                };
+        
+                fetch(
+                "http://localhost:8081/select_questionanswer.php",
+                requestOptions1
+                )
+                .then((response) => response.json())
+                .then((result) => {
+                //console.log(result);
+                // ตรวจสอบว่า result ไม่เป็น null หรือ undefined
+                if (result) {
+                    // วนลูปผลลัพธ์
+                    result.forEach((q) => {
+                    //console.log(q);
+
+                    // สร้าง <tr> ใน HTML
+                    var tr = document.createElement("tr");
+
+                    // สร้าง <td> และใส่ข้อมูลลงไป
+                    var tdQuestionID = document.createElement("td");
+                    tdQuestionID.textContent = q.questionID;
+                    tr.appendChild(tdQuestionID);
+
+                    var tdQuestion = document.createElement("td");
+                    tdQuestion.textContent = q.question;
+                    tr.appendChild(tdQuestion);
+
+                    var tdAnswerID = document.createElement("td");
+                    tdAnswerID.textContent = q.answerID;
+                    tr.appendChild(tdAnswerID);
+
+                    var tdAnswerTEXT = document.createElement("td");
+                    tdAnswerTEXT.textContent = q.answerTEXT;
+                    tr.appendChild(tdAnswerTEXT);
+
+                    // เพิ่ม <tr> ลงใน tbody ของตาราง
+                    document
+                        .getElementById("yourTableId1")
+                        .getElementsByTagName("tbody")[0]
+                        .appendChild(tr);
+
+                    // เรียกใช้ DataTables
+                    $(document).ready(function () {
+                        // ตรวจสอบว่า DataTable ยังไม่ถูกเริ่ม
+                        if (!$.fn.DataTable.isDataTable("#yourTableId1")) {
+                        $("#yourTableId1").DataTable({
+                            data: result,
+                            columns: [
+                            { data: "questionID" },
+                            { data: "question" },
+                            { data: "answerID" },
+                            { data: "answerTEXT" },
+                            ],
+                            paging: true, // ตรวจสอบให้แน่ใจว่า paging ถูกเปิดใช้งาน
+                            pageLength: 8, // กำหนดจำนวนข้อมูลที่แสดงในหนึ่งหน้าเป็น 5 รายการ
+                            language: {
+                            // กำหนดข้อความและปุ่มใน DataTable
+
+                            paginate: {
+                                first: "First",
+                                previous: "Back",
+                                next: "Next",
+                                last: "Last",
+                            },
+                            },
+                            lengthChange: false // ปิดการแสดงตัวเลือก "Entries per page" ทั้งหมด
+                        });
+                        }
+                    });
+                    });
+                }
+                })
+                .catch((error) => console.error(error));
+            </script>
+            <form id="questionform" style="display: block;" onsubmit="event.preventDefault(); sendQuestionToServer();">
+            <div class="flex-container">
+                <input class="id" type="text" id="questionid" name="questionid" placeholder="Question Id" required />
+                <input class="text" type="text" id="question" name="question" placeholder="Question Text" required />
+                <button class="button1" type="submit">Add Question</button>
+            </div>
+            </form>
+            <form id="answerform"  style="display: none;"onsubmit="event.preventDefault(); sendAnswerToServer();">
+                <div class="flex-container">
+                    <input class="id" type="text" id="answerid" name="answerid" placeholder="Answer Id" required />
+                    <input class="text" type="text" id="answer" name="answer" placeholder="Answer Text" required />
+                    <button class="button1" type="submit">Add Answer</button>
+                </div>
+            </form>
+            <div class="Switch-mode-toggle">
+                <input type="checkbox" id="Switch-mode-checkbox">
+                <label for="Switch-mode-checkbox"></label>
+            </div>
+            <br>
+            <br>
+            <button class="button clickButtonBack">Back</button>
+        </div>
+        
+        
+    </div>
+
+
+    <div class="content">
+        <div class="left-panel">
+            <h2>Patient</h2>
+            <p class="panel-link">เพิ่มข้อมูล User</p>
+            <p class="panel-link">เพิ่มข้อมูล Admin</p>
+            <p class="panel-link">แก้ไขข้อมูลบุลคล</p><br><br>
+            <img class="img" src="pic/adduser.png" alt="adduser">
+            <button class="button" id="clickButtonLeft">Add Patient</button>
+        </div>
+        <div class="right-panel">
+            <h2>Question</h2>
+            <p class="panel-link">เพิ่มคำถาม</p>
+            <p class="panel-link">เพิ่มคำตอบ</p>
+            <p class="panel-link">แก้ไขข้อมูลถามตอบ</p><br><br>
+            <img class="img" src="pic/addanswer.png" alt="addanswer">
+            <button class="button" id="clickButtonRight">Add Question</button>
+        </div>
+    </div>
+
+    
+</body>
+<script>
+    const nightModeToggle = document.getElementById('night-mode-checkbox');
+    const SwitchModeToggle = document.getElementById('Switch-mode-checkbox');
+    const questionform = document.getElementById('questionform');
+    const answerform = document.getElementById('answerform');
+    const body = document.body;
+    const content = document.querySelector('.content');
+    const navbar = document.querySelector('.navbar');
+    const leftPanel = document.querySelector('.left-panel');
+    const rightPanel = document.querySelector('.right-panel');
+    const panellinks = document.querySelectorAll('.panel-link');
+    const button = document.querySelectorAll('.button');
+    // const button = document.button;
+
+    const adminSelecte = document.querySelectorAll('.admin-selecte');
+    const adminSelecte1 = document.querySelectorAll('.admin-selecte1');
+
+    const clickButtonLeft = document.getElementById('clickButtonLeft');
+    const clickButtonRight = document.getElementById('clickButtonRight');
+    const clickButtonBack = document.querySelectorAll('.clickButtonBack');
+
+    nightModeToggle.addEventListener('change', () => {
+        body.classList.toggle('dark-mode');
+        content.classList.toggle('dark-mode');
+        navbar.classList.toggle('dark-mode');
+        leftPanel.classList.toggle('dark-mode');
+        rightPanel.classList.toggle('dark-mode');
+        panellinks.forEach(link => {
+            link.classList.toggle('dark-mode');
+        });
+
+        adminSelecte.forEach(item => {
+            item.classList.toggle('dark-mode');
+        });
+
+        adminSelecte1.forEach(item => {
+            item.classList.toggle('dark-mode');
+        });
+
+        button.forEach(button => {
+            button.classList.toggle('dark-mode');
+            // เพิ่มโค้ดนี้เพื่อปรับสีของปุ่ม
+            if (nightModeToggle.checked) {
+                // Dark Mode
+                button.classList.add('dark-mode');
+            } else {
+                // Light Mode
+                button.classList.remove('dark-mode');
+            }
+        });
+    });
+    SwitchModeToggle.addEventListener('change', () => {
+        if (questionform.style.display === 'block') {
+            questionform.style.display = 'none';
+            answerform.style.display = 'block';
+            
+        } else {
+            questionform.style.display = 'block';
+            answerform.style.display = 'none';
+            
+        }
+    });
+    
+
+    function slideLeft() {
+        document.body.style.overflow = 'hidden';
+        leftPanel.classList.remove('slide-right-back');
+        rightPanel.classList.remove('slide-left-back');
+        leftPanel.classList.remove('slide-left-back'); // เพิ่มบรรทัดนี้
+        rightPanel.classList.remove('slide-right-back'); // เพิ่มบรรทัดนี้
+        leftPanel.classList.remove('slide-left'); // เพิ่มบรรทัดนี้
+        rightPanel.classList.remove('slide-right'); // เพิ่มบรรทัดนี้
+        leftPanel.offsetWidth; // เพิ่มบรรทัดนี้ (force reflow)
+        rightPanel.offsetWidth; // เพิ่มบรรทัดนี้ (force reflow)
+        leftPanel.classList.add('slide-left');
+        rightPanel.classList.add('slide-right');
+
+        // Show adminSelecte
+        adminSelecte.forEach(adminSelecte => {
+            adminSelecte.classList.remove('hidden');
+        });
+    }
+    const yourTableId1 = document.getElementById('yourTableId1');
+    // Function to handle slide right
+    function slideRight() {
+        document.body.style.overflow = 'hidden';
+        leftPanel.classList.remove('slide-right-back');
+        rightPanel.classList.remove('slide-left-back');
+        leftPanel.classList.remove('slide-left-back'); // เพิ่มบรรทัดนี้
+        rightPanel.classList.remove('slide-right-back'); // เพิ่มบรรทัดนี้
+        leftPanel.classList.remove('slide-left'); // เพิ่มบรรทัดนี้
+        rightPanel.classList.remove('slide-right'); // เพิ่มบรรทัดนี้
+        leftPanel.offsetWidth; // เพิ่มบรรทัดนี้ (force reflow)
+        rightPanel.offsetWidth; // เพิ่มบรรทัดนี้ (force reflow)
+        leftPanel.classList.add('slide-left');
+        rightPanel.classList.add('slide-right');
+
+        // Show adminSelecte
+        adminSelecte1.forEach(adminSelecte1 => {
+            adminSelecte1.classList.remove('hidden');
+            yourTableId1.style.width = '100%'; // เพิ่มบรรทัดนี้
+        });
+    }
+    // Event listener for button click left
+    clickButtonLeft.addEventListener('click', slideLeft);
+
+    // Event listener for button click right
+    clickButtonRight.addEventListener('click', slideRight);
+
+    // Function to handle slide left back and right back
+    // Function to handle slide left back and right back
+    function slideLeftRightBack() {
+        document.body.style.overflow = 'hidden';
+        leftPanel.classList.remove('slide-left');
+        rightPanel.classList.remove('slide-right');
+        leftPanel.classList.remove('slide-right');
+        rightPanel.classList.remove('slide-left');
+        leftPanel.classList.remove('slide-left-back');
+        rightPanel.classList.remove('slide-right-back');
+        leftPanel.offsetWidth;
+        rightPanel.offsetWidth;
+        leftPanel.classList.add('slide-left-back');
+        rightPanel.classList.add('slide-right-back');
+        // Show both panels when slide left back is completed
+        // leftPanel.addEventListener('transitionend', function () {
+        //     leftPanel.style.display = 'block';
+        //     rightPanel.style.display = 'block';
+        // });
+
+        // Wait for both panels to finish sliding back
+        // leftPanel.addEventListener('transitionend', handleTransitionBegin);
+        // rightPanel.addEventListener('transitionend', handleTransitionBegin);
+
+        // Hide adminSelecte
+        adminSelecte.forEach(adminSelecte => {
+            adminSelecte.classList.add('hidden');
+        });
+
+        // Hide adminSelecte1
+        adminSelecte1.forEach(adminSelecte1 => {
+            adminSelecte1.classList.add('hidden');
+        });
+    }
+
+    // Event listener for button click back
+    // clickButtonBack.addEventListener('click', slideLeftRightBack);
+    clickButtonBack.forEach(button => {
+        button.addEventListener('click', slideLeftRightBack);
+    });
+
+
+    function handleTransitionEnd() {
+        if (!leftPanel.classList.contains('slide-left') && !rightPanel.classList.contains('slide-right')) {
+            if (!leftPanel.classList.contains('slide-left-back') && !rightPanel.classList.contains('slide-right-back')) {
+                leftPanel.style.display = 'none';
+                rightPanel.style.display = 'none';
+                document.body.style.overflow = ''; // Restore scrolling after animation
+            }
+        }
+    }
+
+    function handleTransitionBegin() {
+        if (!leftPanel.classList.contains('slide-left-back') && !rightPanel.classList.contains('slide-right-back')) {
+            if (!leftPanel.classList.contains('slide-left') && !rightPanel.classList.contains('slide-right')) {
+                leftPanel.style.display = 'block';
+                rightPanel.style.display = 'block';
+                document.body.style.overflow = ''; // Restore scrolling after animation
+            }
+        }
+    }
+
+    // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function sendQuestionToServer() {
+        // รับค่าจากฟอร์ม
+        const text = document.getElementById("question").value;
+        const questionId = document.getElementById("questionid").value;
+
+        // ตรวจสอบค่าที่ได้รับ
+        console.log("text", text);
+        console.log("questionId", questionId);
+
+        // ตัวอย่างการเรียกใช้งานฟังก์ชันสำหรับส่งข้อมูลไปยังเซิร์ฟเวอร์
+        sendUpdateQuestionToServer(text, questionId);
+    }
+    function sendUpdateQuestionToServer(text, questionId) {
+        // กำหนดข้อมูลที่ต้องการส่ง
+        console.log("text", text);
+        console.log("questionId", questionId);
+        const update = new URLSearchParams();
+        update.append("text", text);
+        update.append("questionId", questionId);
+        console.log("data", update);
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: update,
+            redirect: "follow",
+        };
+
+        // กำหนด URL ที่ถูกต้อง
+        const url =
+            "http://localhost:8081/UPDATE_question.php";
+
+        fetch(url, requestOptions)
+            .then((response) => response.text())
+            .then((update) => {
+                console.log(update);
+                // เรียกใช้ฟังก์ชันอัปเดตตาราง
+                updateTable1();
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function sendAnswerToServer() {
+        // รับค่าจากฟอร์ม
+        const text = document.getElementById("answer").value;
+        const answerid = document.getElementById("answerid").value;
+
+        // ตรวจสอบค่าที่ได้รับ
+        console.log("text", text);
+        console.log("answerid", answerid);
+
+        // ตัวอย่างการเรียกใช้งานฟังก์ชันสำหรับส่งข้อมูลไปยังเซิร์ฟเวอร์
+        sendUpdateAnswerToServer(text, answerid);
+    }
+    function sendUpdateAnswerToServer(text, answerid) {
+        // กำหนดข้อมูลที่ต้องการส่ง
+        console.log("text", text);
+        console.log("answerid", answerid);
+        const update = new URLSearchParams();
+        update.append("text", text);
+        update.append("answerid", answerid);
+        console.log("data", update);
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: update,
+            redirect: "follow",
+        };
+
+        // กำหนด URL ที่ถูกต้อง
+        const url =
+            "http://localhost:8081/UPDATE_answer.php";
+
+        fetch(url, requestOptions)
+            .then((response) => response.text())
+            .then((update) => {
+                console.log(update);
+                // เรียกใช้ฟังก์ชันอัปเดตตาราง
+                updateTable1();
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function updateTable1() {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow",
+        };
+
+        fetch(
+            "http://localhost:8081/select_questionanswer.php",
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                // เรียกใช้ DataTables
+                $(document).ready(function () {
+                    // ตรวจสอบว่า DataTable ยังไม่ถูกเริ่ม
+                    if (!$.fn.DataTable.isDataTable("#yourTableId1")) {
+                        $("#yourTableId1").DataTable({
+                            data: result,
+                            columns: [
+                                { data: "questionID" },
+                                { data: "question" },
+                                { data: "answerID" },
+                                { data: "answerTEXT" },
+                            ],
+                            paging: true, // ตรวจสอบให้แน่ใจว่า paging ถูกเปิดใช้งาน
+                            pageLength: 8, // กำหนดจำนวนข้อมูลที่แสดงในหนึ่งหน้าเป็น 5 รายการ
+                            language: {
+                            // กำหนดข้อความและปุ่มใน DataTable
+                                paginate: {
+                                    first: "First",
+                                    previous: "Back",
+                                    next: "Next",
+                                    last: "Last",
+                                },
+                            },
+                            lengthChange: false // ปิดการแสดงตัวเลือก "Entries per page" ทั้งหมด
+                        });
+                    } else {
+                        // ลบ DataTable เดิม
+                        $("#yourTableId1").DataTable().destroy();
+
+                        // เพิ่มข้อมูลใหม่
+                        $("#yourTableId1").DataTable({
+                            data: result,
+                            columns: [
+                                { data: "questionID" },
+                                { data: "question" },
+                                { data: "answerID" },
+                                { data: "answerTEXT" },
+                            ],
+                            paging: true, // ตรวจสอบให้แน่ใจว่า paging ถูกเปิดใช้งาน
+                            pageLength: 8, // กำหนดจำนวนข้อมูลที่แสดงในหนึ่งหน้าเป็น 5 รายการ
+                            language: {
+                            // กำหนดข้อความและปุ่มใน DataTable
+                                paginate: {
+                                    first: "First",
+                                    previous: "Back",
+                                    next: "Next",
+                                    last: "Last",
+                                },
+                            },
+                            lengthChange: false // ปิดการแสดงตัวเลือก "Entries per page" ทั้งหมด
+                        });
+                    }
+                });
+            })
+            .catch((error) => console.error(error));
+    }
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function senduserToServer() {
+        // รับค่าจากฟอร์ม
+        const userID = document.getElementById("clinicID").value;
+        const name = document.getElementById("name").value;
+        const lastname = document.getElementById("lastname").value;
+        const role = document.getElementById("role").value;
+
+        // ตรวจสอบค่าที่ได้รับ
+        console.log("userID", userID);
+        console.log("questionId", questionId);
+
+        // ตัวอย่างการเรียกใช้งานฟังก์ชันสำหรับส่งข้อมูลไปยังเซิร์ฟเวอร์
+        sendUpdateQuestionToServer(text, questionId);
+    }
+    function sendUpdateuserToServer() {
+        // รับค่าจากฟอร์ม
+        const clinicID = document.getElementById("clinicID").value;
+        const name = document.getElementById("name").value;
+        const lastname = document.getElementById("lastname").value;
+        const role = document.getElementById("role").value;
+        // กำหนดข้อมูลที่ต้องการส่ง
+        //console.log("userID", userID);
+        console.log("name", clinicID);
+        const update = new URLSearchParams();
+        update.append("clinicID", clinicID);
+        update.append("name", name);
+        update.append("lastname", lastname);
+        update.append("role", role);
+        console.log("data", update);
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: update,
+            redirect: "follow",
+        };
+
+        // กำหนด URL ที่ถูกต้อง
+        const url =
+            "http://localhost:8081/INSERTuser.php";
+
+        fetch(url, requestOptions)
+            .then((response) => response.text())
+            .then((update) => {
+                console.log(update);
+                // เรียกใช้ฟังก์ชันอัปเดตตาราง
+                updateTable();
+            })
+            .catch((error) => console.error(error));
+    }
+    function updateTable() {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow",
+        };
+
+        fetch(
+            "http://localhost:8081/read.php",
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                // เรียกใช้ DataTables
+                $(document).ready(function () {
+                    // ตรวจสอบว่า DataTable ยังไม่ถูกเริ่ม
+                    if (!$.fn.DataTable.isDataTable("#yourTableId")) {
+                        $("#yourTableId").DataTable({
+                            data: result,
+                            columns: [
+                                { data: "userID" },
+                                { data: "clinicID" },
+                                { data: "name" },
+                                { data: "lastname" },
+                                { data: "role" },
+                            ],
+                            paging: true,
+                            language: {
+                                paginate: {
+                                    first: "First",
+                                    previous: "Back",
+                                    next: "Next",
+                                    last: "Last",
+                                },
+                            },
+                        });
+                    } else {
+                        // ลบ DataTable เดิม
+                        $("#yourTableId").DataTable().destroy();
+
+                        // เพิ่มข้อมูลใหม่
+                        $("#yourTableId").DataTable({
+                            data: result,
+                            columns: [
+                                { data: "userID" },
+                                { data: "clinicID" },
+                                { data: "name" },
+                                { data: "lastname" },
+                                { data: "role" },
+                            ],
+                            paging: true,
+                            language: {
+                                paginate: {
+                                    first: "First",
+                                    previous: "Back",
+                                    next: "Next",
+                                    last: "Last",
+                                },
+                            },
+                        });
+                    }
+                });
+            })
+            .catch((error) => console.error(error));
+    }
+</script>
+
+</html>

@@ -1,0 +1,74 @@
+function callPythonFunction(user_ID, slide) {
+    const formData = new FormData();
+    formData.append("userID", userID); // เพิ่ม userID เข้า FormData
+    formData.append("slideIndex", slide); // เพิ่ม slideIndex เข้า FormData
+    // ส่งคำขอ Fetch ไปยัง URL ของ Python API
+    fetch("http://localhost:5000/python-endpoint", {
+      method: "POST", // หรือ 'POST' ตามที่ต้องการ
+      body: formData, // ส่งข้อความไปทาง body
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("รับข้อมูลจาก Python:", data);
+        // ตรวจสอบว่ามีข้อมูล nextpage หรือไม่
+        if (data.nextpage) {
+          // ทำการเปลี่ยนหน้าไปที่ index1.html
+          //window.location.href = data.nextpage;
+          console.log(data.nextpage);
+          //ไว้แทรกบนหน้าเว็บ
+          document.getElementById(slideIndex).innerHTML = data.nextpage;
+          sound(data.nextpage);
+        } else {
+          // ไม่มีข้อมูล nextpage, ทำตามที่คุณต้องการ
+          console.log("ไม่มีข้อมูล nextpage");
+        }
+      })
+      .catch((error) => {
+        console.error("เกิดข้อผิดพลาด:", error);
+      });
+  }
+  function sound(text) {
+    const formData = new FormData();
+    formData.append("text", text); // เพิ่ม userID เข้า FormData
+    // ส่งคำขอ Fetch ไปยัง URL ของ Python API
+    fetch("http://localhost:5000/python-sound", {
+      method: "POST", // หรือ 'POST' ตามที่ต้องการ
+      
+      // สามารถส่งข้อมูลต่าง ๆ ได้ที่นี่ (ถ้ามี)
+      body: formData, // ส่งข้อความไปทาง body
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("http://localhost:5000/" + data.sound); // แสดงข้อมูลที่ได้รับจาก API
+
+        // เรียกใช้ฟังก์ชันเพื่อเล่นไฟล์เสียง
+        playSound(data.sound);
+      })
+      .catch((error) => {
+        console.error("เกิดข้อผิดพลาด:", error);
+      });
+  }
+
+  // ฟังก์ชันเล่นไฟล์เสียง
+  function playSound(filename) {
+    // เพิ่มพารามิเตอร์คิวรีที่สุ่มให้ URL เพื่อให้ได้การรีเฟรช
+    const randomQueryParam = Math.random().toString(36).substring(7);
+    const audioUrl =
+      "http://localhost:5000/play/" + filename + "?" + randomQueryParam;
+
+      fetch("http://localhost:5000/play/" + filename, {
+        method: "GET", // หรือ 'POST' ตามที่ต้องการ
+        
+        
+      })
+        .then((response) => response.text())
+        .then((data) => {
+
+          console.log(data)
+          document.getElementById(`audio${slideIndex}`).style.display = "block";
+          document.getElementById(`audio${slideIndex}`).src = audioUrl;
+        })
+        .catch((error) => {
+          console.error("เกิดข้อผิดพลาด:", error);
+        });
+  }
